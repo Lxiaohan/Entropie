@@ -1,0 +1,412 @@
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- *** frameworks and shared ressources *** -->
+    <!-- version for deployment -->
+<!--
+    <script type="text/javascript"            src="/MathJax/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full,local/mwMathJaxConfig"></script>
+    <script type="text/javascript"            src="/jsxgraph/jsxgraphcore.js"></script>
+    <link   type="text/css" rel="stylesheet" href="/jsxgraph/jsxgraph.css" />
+
+    <link   type="text/css" rel="stylesheet" href="/lnt_applets/style.css" />
+    <script type="text/javascript"            src="/lnt_applets/utilfuns.js"></script>
+-->
+    <!-- version for local development -->
+
+    <script type="text/javascript"            src="http://dev.lntwww.de/MathJax/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full,local/mwMathJaxConfig"></script>
+    <script type="text/javascript"            src="http://dev.lntwww.de/jsxgraph/jsxgraphcore.js"></script>
+    <link   type="text/css" rel="stylesheet" href="http://dev.lntwww.de/jsxgraph/jsxgraph.css" />
+
+    <link   type="text/css" rel="stylesheet" href="../style.css" />
+    <script type="text/javascript"            src="../utilfuns.js"></script>
+
+
+
+    <!-- *** project specific ressources *** -->
+    <link   type="text/css" rel="stylesheet" href="style.css" />
+    <script type="text/javascript"            src="utildist.js"></script>
+    <script type="text/javascript"            src="verteilungDb.js"></script>
+</head>
+
+<body onload ="setup()">
+  <!-- Title  -->
+  <div class="flexContainerHead totalWidth">
+    <div class="flexItemHead">
+      <h1> Entropien von binären Nachrichtenquellen(M=2)</h1>
+      <span class="copyright">
+        © 2018 Lehrstuhl f&uuml;r Nachrichtentechnik, Technische Universit&auml;t M&uuml;nchen<br>
+        Authors: Xiaohan Liu &amp; Tasnad Kernetzky
+      </span>
+    </div>
+  </div>
+
+  <div class="flexContainer totalWidth">
+    <div class="flex-item">
+        <p>Binärquelle</p>
+      <select id="distSelectL" class="highlight2" onchange="changeDistL()">
+        <option value="binomial" selected="selected">Ohne Gedächtnis</option>
+        <option  value="poisson">Markov</option>
+      </select>
+
+      <br><br>
+
+      <div id="configBox1HTML" class="jxgBox jxgBoxBorder" style="width: 250px; height: 400px"></div>
+    </div>
+
+    <div class="flex-item">
+      <div class="flex-item">
+        <br><br>
+        <div id="pltBoxHTML" class="jxgBox jxgBoxBorder" style="width: 650px; height: 400px"></div>
+      </div>
+    </div>
+
+    <div class="flex-item">
+     
+      
+    </div>
+
+    <span class="highlight2" id="dummyForHl2"></span>
+    <span class="highlightP" id="dummyForHlP"></span>
+
+  </div>
+
+
+  <div class="totalWidth" style="font-size: 22px; text-align: center; text-decoration: underline">Exercises</div>
+
+  <div class="totalWidth" style="text-align: center; justify-content:space-between">
+    <button id="reset" class="exButton" onclick="callExercise(0)">0</button>
+    <button id="ex1" class="exButton" onclick="callExercise(1)">1</button>
+    <button id="ex2" class="exButton" onclick="callExercise(2)">2</button>
+    <button id="ex3" class="exButton" onclick="callExercise(3)">3</button>
+    <button id="ex4" class="exButton" onclick="callExercise(4)">4</button>
+    <button id="ex5" class="exButton" onclick="callExercise(5)">5</button>
+    <button id="ex6" class="exButton" onclick="callExercise(6)">6</button>
+
+    <div id="description"></div>
+    <br>
+    <button id="solButton" class="button" style="visibility:hidden;" onclick="solution()">Show solution</button>
+    <br><br>
+    <div id="solution" class="peBorder"></div>
+  </div>
+
+  <script type="text/javascript">
+    function setup() {
+      // context, holds most of the variables
+      ctx = {};
+
+      // Get font size and colors from CSS
+      var bodyStyles = window.getComputedStyle(document.body);
+      ctx.fontSize = bodyStyles.getPropertyValue("font-size");
+      ctx.bgColor    = bodyStyles.getPropertyValue("background-color");
+      ctx.textColor  = bodyStyles.getPropertyValue("color");
+      ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl2")).getPropertyValue("color");
+      ctx.hlColor2   = window.getComputedStyle(document.getElementById("dummyForHlP")).getPropertyValue("color");
+
+      // array that holds sliders and distribution values for both config boxes
+      ctx.fns = [
+        {"color": ctx.hlColor1},
+        {"color": ctx.hlColor2}
+      ];
+
+      // assign the dropdown lists
+      ctx.fns[0].index = document.getElementById("distSelectL").selectedIndex;
+      //ctx.fns[1].index = document.getElementById("distSelectR").selectedIndex;
+
+      ctx.fns[0].index = 1;
+      //ctx.fns[1].index = 0;
+
+      // Sets up the table for probability values
+      // create rows and cells needed for the table
+    
+
+      // JXG settings
+      JXG.Options.text.useMathJax = true;
+      JXG.Options.navbar.strokeColor = ctx.textColor;
+      JXG.Options.navbar.fontSize = ctx.fontSize;
+
+      // array that stores all exercise buttons
+      ctx.exButtons = [
+      document.getElementById("reset"),
+      document.getElementById("ex1"),
+      document.getElementById("ex2"),
+      document.getElementById("ex3"),
+      document.getElementById("ex4"),
+      document.getElementById("ex5"),
+      document.getElementById("ex6"),
+      ];
+
+      // load utilfuns
+      ctx.utilFuns = getUtilFuns();
+
+      // load utilfunctions for distribution applet
+      ctx.utilDist = getUtilDist();
+
+      // load parameters from preset database
+      ctx.verteilungDb = loadDb();
+
+      // set up the jxg boxes
+      ctx.fns[0].cnfBox = JXG.JSXGraph.initBoard("configBox1HTML", {
+        showCopyright: false,
+        ShowNavigation: false,
+        axis: false,
+        grid: false,
+        zoom: {enabled:false}, pan: {enabled:false},
+        boundingbox: [0, 0, 100, 100]
+      });
+
+
+      ctx.pltBox = JXG.JSXGraph.initBoard("pltBoxHTML", {
+        showCopyright: false,
+        axis: false,
+        grid: true,
+        zoom: { factorX: 1.1, factorY: 1.1, wheel: true, needshift: true, eps: 0.1 },
+        boundingbox: [-0.5, 0.7, 10.2, -0.2]
+      });
+
+      // update the pltBox whenever changes are made
+      ctx.fns[0].cnfBox.addChild(ctx.pltBox);
+      
+
+      // set colors
+      ctx.fns[0].cnfBox.containerObj.style.backgroundColor = ctx.bgColor;
+      ctx.fns[0].cnfBox.options.label.strokeColor = ctx.textColor;
+      ctx.pltBox.containerObj.style.backgroundColor = ctx.bgColor;
+      ctx.pltBox.options.label.strokeColor = ctx.textColor;
+
+      // axis
+      ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
+        name: "$\\mu$",
+        withLabel: true, label: {position: "rt", offset: [-45, -25], fontSize: ctx.fontSize}
+      });
+
+      ctx.pltBox.create("axis", [[0, 0], [0, 1]], {
+        name: "Pr$(z = \\mu)$",
+        withLabel: true, label: {position: "rt", offset: [20, -25], fontSize: ctx.fontSize, rotate: 90}
+      });
+
+    // create the two identical boxes
+    for (var i=0; i<=1; i++) {
+
+      // create sliders
+      ctx.fns[0].sldPA = ctx.fns[0].cnfBox.create("slider", [[10,10], [90,10], [0, 0.2, 1]],
+        {withLabel: false, snapWidth: 0.01}
+      );
+      ctx.fns[0].txtSldPA = ctx.fns[0].cnfBox.create("text", [10, 15,
+        (function() { return function() {
+          return "$P_A =" + ctx.utilFuns.round(ctx.fns[0].sldPA.Value(), 2) + "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+      );
+
+      ctx.fns[0].sldPB = ctx.fns[0].cnfBox.create("slider", [[10,25], [90,25], [0, 0.8, 1]],
+        {withLabel: false, snapWidth: 0.01}
+      );
+      ctx.fns[0].txtSldPB = ctx.fns[0].cnfBox.create("text", [10, 30,
+        (function() { return function() {
+          return "$P_B =" + ctx.utilFuns.round(ctx.fns[0].sldPB.Value(), 2) + "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+      );
+      ctx.fns[0].sldPAB = ctx.fns[0].cnfBox.create("slider", [[10,40], [90,40], [0, 0.8, 1]],
+        {withLabel: false, snapWidth: 0.01}
+      );
+      ctx.fns[0].txtSldPAB = ctx.fns[0].cnfBox.create("text", [10, 45,
+        (function() { return function() {
+          return "$P$<sub>A|B</sub> = " + ctx.utilFuns.round(ctx.fns[0].sldPAB.Value(), 2);}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+      );
+
+      
+
+      // store the probabilities of the distribution in arrays
+      ctx.fns[0].probabValues = [];
+
+      setProbValues(0);
+
+      // Prints out values for m_1, m_2, sigma
+      // m_1
+      ctx.fns[0].txtM1 = ctx.fns[0].cnfBox.create("text", [10, 55,
+        (function() { return function() {
+          ctx.fns[0].m1 = 0;
+          for(var mu=0; mu<=20; mu++) {
+            ctx.fns[0].m1 += mu * ctx.fns[0].probabValues[mu];
+          }
+          return "$m_1 =" + ctx.utilFuns.round(ctx.fns[0].m1, 2) + "$"; }}())],
+        {fixed: true, strokeColor: ctx.fns[0].color, fontSize: ctx.fontSize}
+      );
+
+      // m_2
+      ctx.fns[0].txtM2 = ctx.fns[0].cnfBox.create("text", [10, 65,
+        (function() { return function() {
+          ctx.fns[0].m2 = 0;
+          for(var mu=0; mu<=20; mu++) {
+            ctx.fns[0].m2 += Math.pow(mu, 2) * ctx.fns[0].probabValues[mu];
+          }
+          return "$m_2 =" + ctx.utilFuns.round(ctx.fns[0].m2, 2) + "$"; }}())],
+        {fixed: true, strokeColor: ctx.fns[0].color, fontSize: ctx.fontSize}
+      );
+
+      // sigma^2
+      ctx.fns[0].txtSigma2 = ctx.fns[0].cnfBox.create("text", [10, 75,
+        (function() { return function() {
+          ctx.fns[0].sigma2 = ctx.fns[0].m2 - Math.pow(ctx.fns[0].m1, 2);
+          return "$\\sigma^2 =" + ctx.utilFuns.round(ctx.fns[0].sigma2, 2) + "$"; }}(0))],
+        {fixed: true, strokeColor: ctx.fns[0].color, fontSize: ctx.fontSize}
+      );
+
+      // sigma
+      ctx.fns[0].txtSigma = ctx.fns[0].cnfBox.create("text", [10, 85,
+        (function() { return function() {
+          ctx.fns[0].sigma = Math.sqrt(ctx.fns[0].sigma2);
+          return "$\\sigma =" + ctx.utilFuns.round(ctx.fns[0].sigma, 2) + "$"; }}())],
+        {fixed: true, strokeColor: ctx.fns[0].color, fontSize: ctx.fontSize}
+      );
+
+      //Create the plots
+      ctx.fns[i].plt = [];
+
+      if (ctx.fns[0].index != 0) {
+        if (i == 0) {
+          for (var mu=0; mu<=20; mu++) {
+            ctx.fns[i].plt[mu] = ctx.pltBox.create("line", [[mu-0.05,0], [mu-0.05,ctx.fns[i].probabValues[mu]]],
+              {fixed: true, withLabel: false, strokeColor: ctx.fns[i].color, strokeWidth: 8, straightFirst: false, straightLast: false}
+            )
+          }
+        }
+       
+      }
+      else {
+        for (var mu=0; mu<=20; mu++) {
+          ctx.fns[i].plt[mu] = ctx.pltBox.create("line", [[mu,0], [mu,ctx.fns[i].probabValues[mu]]],
+            {fixed: true, withLabel: false, strokeColor: ctx.fns[i].color, strokeWidth: 8, straightFirst: false, straightLast: false}
+          )
+        }
+      }
+
+    };
+
+    ctx.updateDocumentFromSliders = function() {
+      setProbValues(0);
+    
+
+    }
+
+    ctx.fns[0].cnfBox.on("update", ctx.updateDocumentFromSliders);
+    //ctx.fns[1].cnfBox.on("update", ctx.updateDocumentFromSliders);
+
+    ctx.updateDocumentFromSliders();
+    changeDistL();
+    //changeDistR();
+
+    callExercise(0);
+  }
+
+  function hideSlider(sld, hide) {
+    if (hide)
+    {
+      if (!sld.oldCoords1)
+      {
+          sld.oldCoords1 = [sld.point1.coords.usrCoords[1], sld.point1.coords.usrCoords[2]];
+          sld.oldCoords2 = [sld.point2.coords.usrCoords[1], sld.point2.coords.usrCoords[2]];
+        }
+        sld.point1.coords.setCoordinates(JXG.COORDS_BY_USER, [-10, -10]);
+        sld.point2.coords.setCoordinates(JXG.COORDS_BY_USER, [-10, -10]);
+    }
+    else
+    {
+      var oldCoords1 = sld.oldCoords1;
+      var oldCoords2 = sld.oldCoords2;
+      if (oldCoords1 && oldCoords2) {
+          sld.point1.coords.setCoordinates(JXG.COORDS_BY_USER, oldCoords1);
+          sld.point2.coords.setCoordinates(JXG.COORDS_BY_USER, oldCoords2);
+        }
+      }
+    }
+
+    function setProbValues(n) {
+     
+    }
+
+    
+  function changeDistL() {
+    if (document.getElementById("distSelectL").value == "binomial") {
+      hideSlider(ctx.fns[0].sldI, false);
+      hideSlider(ctx.fns[0].sldP, false);
+      hideSlider(ctx.fns[0].sldLambda, true);
+      ctx.fns[0].txtSldI.setAttribute ({visible: true});
+      ctx.fns[0].txtSldP.setAttribute ({visible: true});
+      ctx.fns[0].txtSldLambda.setAttribute ({visible: false});
+    }
+    else if (document.getElementById("distSelectL").value == "poisson") {
+      hideSlider(ctx.fns[0].sldI, true);
+      hideSlider(ctx.fns[0].sldP, true);
+      hideSlider(ctx.fns[0].sldLambda, false);
+      ctx.fns[0].txtSldI.setAttribute ({visible: false});
+      ctx.fns[0].txtSldP.setAttribute ({visible: false});
+      ctx.fns[0].txtSldLambda.setAttribute ({visible: true});
+    }
+    ctx.fns[0].index = document.getElementById("distSelectL").selectedIndex;
+    setProbValues(0);
+    ctx.fns[0].cnfBox.fullUpdate();
+    ctx.pltBox.update();
+  }
+
+
+  // function for updating the table
+  
+
+  function callExercise (n) {
+    // mark the selected button
+    for (var i=0; i<=6; i++) {
+      if(i == n) {
+        ctx.exButtons[i].className = "exButtonActive";
+        ctx.exButtons[i].disabled = true;
+      }
+        else {
+        ctx.exButtons[i].className = "exButton";
+        ctx.exButtons[i].disabled = false;
+      }
+    }
+
+    ctx.fns[0].sldI.setValue(ctx.verteilungDb[n].parameters.I1);
+    ctx.fns[0].sldP.setValue(ctx.verteilungDb[n].parameters.p1);
+    ctx.fns[0].sldLambda.setValue(ctx.verteilungDb[n].parameters.lambda1);
+    document.getElementById("distSelectL").options.selectedIndex = ctx.verteilungDb[n].dropIndexL;
+
+
+    changeDistL();
+    //changeDistR();
+
+    // loads the exercise description
+    document.getElementById("description").innerHTML = ctx.verteilungDb[n].description;
+    // tell MathJax that there is new content
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+    document.getElementById("solButton").style.visibility = "visible";
+
+    document.getElementById("solution").innerHTML = ctx.verteilungDb[n].solution;
+    document.getElementById("solution").style.visibility = "hidden";
+    document.getElementById("solButton").innerHTML = "Show solution";
+
+    // hide the solution button when clicking reset
+    if (n == 0) {
+      document.getElementById("solButton").style.visibility = "hidden";
+    }
+
+  }
+
+  function solution() {
+    if (document.getElementById("solution").style.visibility == "hidden") {
+      document.getElementById("solution").style.visibility = "visible";
+      document.getElementById("solButton").innerHTML = "Hide solution";
+    }
+    else {
+      document.getElementById("solution").style.visibility = "hidden";
+      document.getElementById("solButton").innerHTML = "Show solution";
+    }
+
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+
+   </script>
+</body>
+</html>

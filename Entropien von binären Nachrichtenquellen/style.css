@@ -1,0 +1,70 @@
+.totalWidth {
+  width: 1200px;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.flex-item {
+  padding: 5px;
+  margin: auto;
+  text-align: center;
+}
+
+.boxLabel {
+  font-size: 18px;
+  text-align: start;
+  text-decoration: underline;
+}
+
+.peBorder {
+    text-align: center;
+    font-size: 18px;
+    padding: 2px;
+    margin: 0px;
+    border: 2px solid #e37222;
+  }
+
+  .highlightP {
+    color: #e30000;
+  }
+
+table, th {
+  border-collapse: collapse;
+  text-align: center;
+  border: 2px solid black;
+  padding: 5px;
+}
+
+td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+.exButton {
+  font-size: 18px;
+  background-color: #c7c0ce;
+  border-radius: 50%;
+  margin: 15px;
+  cursor: pointer
+}
+
+.exButton:hover {
+  background-color: #574e60;
+  color: white;
+}
+
+.exButtonActive {
+  font-size: 18px;
+  background-color: #574e60;
+  color: white;
+  border-radius: 50%;
+  margin: 15px;
+}

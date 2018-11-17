@@ -63,11 +63,21 @@
     </div>
 
     <div class="flex-item">
+      <select id="distSelectL" class="highlight2" onchange="changeN()">
+        <option  value="N10">N = 10</option>
+        <option value="N100" selected="selected">N = 100</option>
+        <option value="N1000" selected="selected">N = 1000</option>
+        <option value="N10000" selected="selected">N = 10000</option>
+        <option value="N100000" selected="selected">N = 100000</option>
+      </select>
+      <br><br>
+    <button id="start" class="button" onclick="startbsf">Start</button>
+        
+    <br><br>
      <div id="bfBoxHTML" class="jxgBox jxgBoxBorder" style="width: 250px; height: 450px"></div>
       
     </div>
-
-    <span class="highlight2" id="dummyForHl2"></span>
+    <span class="highlight1" id="dummyForHl1"></span>
 
   </div>
 
@@ -100,7 +110,7 @@
       ctx.fontSize = bodyStyles.getPropertyValue("font-size");
       ctx.bgColor    = bodyStyles.getPropertyValue("background-color");
       ctx.textColor  = bodyStyles.getPropertyValue("color");
-      ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl2")).getPropertyValue("color");
+      ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl1")).getPropertyValue("color");
       
 
       // array that holds sliders and distribution values for both config boxes
@@ -174,9 +184,9 @@
       ctx.pltBox = JXG.JSXGraph.initBoard("pltBoxHTML", {
         showCopyright: false,
         axis: false,
-        grid: true,
+        grid: false,
         zoom: { factorX: 1.1, factorY: 1.1, wheel: true, needshift: true, eps: 0.1 },
-        boundingbox: [-0.5, 0.7, 10.2, -0.2]
+        boundingbox: [-0.1, 1.1, 1.1, -0.2]
       });
         ctx.bfBox = JXG.JSXGraph.initBoard("bfBoxHTML", {
         showCopyright: false,
@@ -210,17 +220,16 @@
 
       // axis
       ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
-        name: "$\\mu$",
-        withLabel: true, label: {position: "rt", offset: [-45, -25], fontSize: ctx.fontSize}
+        name: "$P_A$",
+        withLabel: true, label: {position: "rt", offset: [-40, -25], fontSize: ctx.fontSize}
       });
 
       ctx.pltBox.create("axis", [[0, 0], [0, 1]], {
-        name: "Pr$(z = \\mu)$",
+        name: "$H$",
         withLabel: true, label: {position: "rt", offset: [20, -25], fontSize: ctx.fontSize, rotate: 90}
       });
 
-    // create the two identical boxes
- 
+    
 
       // create sliders
       
@@ -234,7 +243,6 @@
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
       
-
       ctx.sldPB = ctx.cnfBox.create("slider", [[10,45], [90,45], [0, 0.8, 1]],
         {withLabel: false, snapWidth: 0.01}
       );
@@ -271,51 +279,299 @@
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
       
-      ctx.circleA = ctx.circleBox.create("circle",[[30,45],[30,60]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      // create Markovdiagramm
+      ctx.circleA = ctx.circleBox.create("circle",[[30,45],[30,60]],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
       ctx.txtcircleA = ctx.circleBox.create("text",[28,45,"$A$"],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
-      ctx.arcA = ctx.circleBox.create("arc",[[14,45],[19,55],[19,34]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
-      ctx.arrowAB = ctx.circleBox.create("arrow",[[40,34],[60,34]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
-        
-      ctx.circleB = ctx.circleBox.create("circle",[[70,45],[70,60]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
-       ctx.txtcircleB = ctx.circleBox.create("text",[68,45,"$B$"],
+      ctx.arcA = ctx.circleBox.create("arc",[[14,45],[19,55],[19,34]],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
+      ctx.arrowAB = ctx.circleBox.create("arrow",[[40,34],[60,34]],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
+      ctx.circleB = ctx.circleBox.create("circle",[[70,45],[70,60]],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
-    ctx.arcB = ctx.circleBox.create("arc",[[85,45],[80,34],[80,55]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, label: false,size: 1, name: ""});
-    ctx.arrowBA = ctx.circleBox.create("arrow",[[60,55],[40,55]],{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
-
-    ctx.cnfBox.fullUpdate();
-
-    ctx.updateDocumentFromSliders = function() {
-   
-      var oldPA = ctx.sldPA.Value();
-      var newPB = 1- oldPA;
-      //  console.log("pa2",ctx.sldPA.Value());
-        var oldPB = ctx.sldPB.Value();
-    var newPA = 1 - oldPB;
-    ctx.sldPA.setValue(newPA);
-    //console.log("pa3",ctx.sldPA.Value());
-    ctx.sldPB.setValue(newPB);
-    
-    }
-    ctx.cnfBox.on("update", ctx.updateDocumentFromSliders);
-    ctx.updateDocumentFromSliders();
-   //ctx.cnfBox.update();
-   
+      ctx.txtcircleB = ctx.circleBox.create("text",[68,45,"$B$"],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      ctx.arcB = ctx.circleBox.create("arc",[[85,45],[80,34],[80,55]],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, label: false,size: 1, name: ""});
+      ctx.arrowBA = ctx.circleBox.create("arrow",[[60,55],[40,55]],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,label: false,size: 1, name: ""});
+      ctx.txtPBIA = ctx.circleBox.create("text",[45, 30,
+        (function() { return function() {
+          return ctx.utilFuns.round(ctx.sldPBIA.Value(),2); }}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      ctx.txtPAIA = ctx.circleBox.create("text",[4, 45,
+        (function() { return function() {
+          return ctx.utilFuns.round((1-ctx.sldPBIA.Value()),2); }}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      ctx.txtPAIB = ctx.circleBox.create("text",[45, 60,
+        (function() { return function() {
+          return ctx.utilFuns.round(ctx.sldPAIB.Value(),2); }}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      ctx.txtPBIB = ctx.circleBox.create("text",[88, 45,
+        (function() { return function() {
+          return ctx.utilFuns.round((1-ctx.sldPAIB.Value()),2); }}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      ctx.txtPA = ctx.circleBox.create("text",[30, 75,
+        (function() { return function() {
+          return "$P_A = " + ctx.utilFuns.round((ctx.sldPAIB.Value()/(ctx.sldPAIB.Value()+ctx.sldPBIA.Value())),3) + "$"; }}())],
+        {fixed: true, strokeColor: ctx.hlColor1, fontSize: ctx.fontSize});
+        ctx.txtPB = ctx.circleBox.create("text",[30, 90,
+        (function() { return function() {
+          return "$P_B = " + ctx.utilFuns.round((1-(ctx.sldPAIB.Value()/(ctx.sldPAIB.Value()+ctx.sldPBIA.Value()))),3) + "$"; }}())],
+        {fixed: true, strokeColor: ctx.hlColor1, fontSize: ctx.fontSize});
+        
+      
+        
+        
+       //create Solution
+       
         ctx.simu = ctx.zeigBox.create("text",[5, 25, "Simulationsergebnis:"],
-      {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+            {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
         ctx.theo = ctx.zeigBox.create("text",[5, 65, "theoretisch:"],
-      {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
-      ctx.beispielfolge = ctx.bfBox.create("text",[25, 5, "Beispielfolge:"],
-      {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+            {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+            
+                //Simulation(ohne gedächtnis)
+                
+        ctx.osimuh1 = ctx.zeigBox.create("text",[30,25, 
+            (function() { return function() {
+          return "$H_1 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.osimuh2 = ctx.zeigBox.create("text",[50,25, 
+            (function() { return function() {
+          return "$H_2 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.osimuh3 = ctx.zeigBox.create("text",[70,25, 
+            (function() { return function() {
+          return "$H_3 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.osimuh4 = ctx.zeigBox.create("text",[30,45, 
+            (function() { return function() {
+          return "$H_4 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.osimuh5 = ctx.zeigBox.create("text",[50,45, 
+            (function() { return function() {
+          return "$H_5 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.osimuh6 = ctx.zeigBox.create("text",[70,45, 
+            (function() { return function() {
+          return "$H_6 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+                //theoretisch(ohne gedächtnis)
+        
+        ctx.otheoh0function = function(){
+                return Math.log(2)/Math.log(2);
+            }
+        ctx.otheoh0 = ctx.zeigBox.create("text",[20,65, 
+            (function() { return function() {
+          return "$H_0 = " + ctx.utilFuns.round(ctx.otheoh0function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheohfunction = function(){
+                return -ctx.sldPA.Value()*(Math.log(ctx.sldPA.Value())/Math.log(2))-ctx.sldPB.Value()*(Math.log(ctx.sldPB.Value())/Math.log(2));
+            }
+        ctx.otheoh1 = ctx.zeigBox.create("text",[35,65, 
+            (function() { return function() {
+          return "$H_1 = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheoh2 = ctx.zeigBox.create("text",[55,65, 
+            (function() { return function() {
+          return "$H_2 = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheoh3 = ctx.zeigBox.create("text",[75,65, 
+            (function() { return function() {
+          return "$H_3 = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheoh4 = ctx.zeigBox.create("text",[20,85, 
+            (function() { return function() {
+          return "$H_4 = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheoh5 = ctx.zeigBox.create("text",[40,85, 
+            (function() { return function() {
+          return "$H_5 = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.otheoh = ctx.zeigBox.create("text",[60,85, 
+            (function() { return function() {
+          return "$H = " + ctx.utilFuns.round(ctx.otheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.hlColor1, fontSize: ctx.fontSize}
+            );
       
       
-    changeDistL();
-    //changeDistR();
+            //Simulation(Markov)
+                
+        ctx.msimuh1 = ctx.zeigBox.create("text",[30,25, 
+            (function() { return function() {
+          return "$H_1 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.msimuh2 = ctx.zeigBox.create("text",[50,25, 
+            (function() { return function() {
+          return "$H_2 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.msimuh3 = ctx.zeigBox.create("text",[70,25, 
+            (function() { return function() {
+          return "$H_3 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.msimuh4 = ctx.zeigBox.create("text",[30,45, 
+            (function() { return function() {
+          return "$H_4 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.msimuh5 = ctx.zeigBox.create("text",[50,45, 
+            (function() { return function() {
+          return "$H_5 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.msimuh6 = ctx.zeigBox.create("text",[70,45, 
+            (function() { return function() {
+          return "$H_6 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+            
+             //theoretisch(Markov)
+        
+        ctx.mtheoh0function = function(){
+                return Math.log(2)/Math.log(2);
+            }
+        ctx.mtheoh0 = ctx.zeigBox.create("text",[20,65, 
+            (function() { return function() {
+          return "$H_0 = " + ctx.utilFuns.round(ctx.otheoh0function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheoh1function = function(){
+                var pa = ctx.sldPAIB.Value()/(ctx.sldPAIB.Value()+ctx.sldPBIA.Value());
+                var pb = 1-pa;
+                return -(pa*(Math.log(pa)/Math.log(2))+pb*(Math.log(pb)/Math.log(2)));
+            }
+        ctx.mtheoh1 = ctx.zeigBox.create("text",[35,65, 
+            (function() { return function() {
+          return "$H_1 = " + ctx.utilFuns.round(ctx.mtheoh1function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheoh2function = function(){
+                var pa = ctx.sldPAIB.Value()/(ctx.sldPAIB.Value()+ctx.sldPBIA.Value()),
+                    pb = 1-pa,
+                    pa_b =ctx.sldPAIB.Value(),
+                    pb_a = ctx.sldPBIA.Value(),
+                    pa_a=1-pb_a,
+                    pb_b=1-pa_b,
+                    paa = pa*pa_a,
+                    pbb = pb*pb_b,
+                    pab = pa*pb_a;
+                return -(paa*(Math.log(paa)/Math.log(2))+pbb*(Math.log(pbb)/Math.log(2))+2*pab*(Math.log(pab)/Math.log(2)))/2;
+            }
+        ctx.mtheoh2 = ctx.zeigBox.create("text",[55,65, 
+            (function() { return function() {
+          return "$H_2 = " + ctx.utilFuns.round(ctx.mtheoh2function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheoh3function = function(){
+                return (-1/3)*ctx.mtheoh1function() + (4/3)*ctx.mtheoh2function();
+            }
+        ctx.mtheoh3 = ctx.zeigBox.create("text",[75,65, 
+            (function() { return function() {
+          return "$H_3 = " + ctx.utilFuns.round(ctx.mtheoh3function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheoh4function = function(){
+                return (-1/2)*ctx.mtheoh1function() + (3/2)*ctx.mtheoh2function();
+            }
+        ctx.mtheoh4 = ctx.zeigBox.create("text",[20,85, 
+            (function() { return function() {
+          return "$H_4 = " + ctx.utilFuns.round(ctx.mtheoh4function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheoh5function = function(){
+                return (-3/5)*ctx.mtheoh1function() + (8/5)*ctx.mtheoh2function();
+            }
+        ctx.mtheoh5 = ctx.zeigBox.create("text",[40,85, 
+            (function() { return function() {
+          return "$H_5 = " + ctx.utilFuns.round(ctx.mtheoh5function(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+            );
+        ctx.mtheohfunction = function(){
+                var pa = ctx.sldPAIB.Value()/(ctx.sldPAIB.Value()+ctx.sldPBIA.Value()),
+                    pb = 1-pa,
+                    pa_b =ctx.sldPAIB.Value(),
+                    pb_a = ctx.sldPBIA.Value(),
+                    pa_a=1-pb_a,
+                    pb_b=1-pa_b,
+                    paa = pa*pa_a,
+                    pbb = pb*pb_b,
+                    pab = pa*pb_a;
+                return -(pa*pa_a*(Math.log(pa_a)/Math.log(2))+pa*pb_a*(Math.log(pb_a)/Math.log(2))+pb*pa_b*(Math.log(pa_b)/Math.log(2))+pb*pb_b*(Math.log(pb_b)/Math.log(2)));
+            }
+        ctx.mtheoh = ctx.zeigBox.create("text",[60,85, 
+            (function() { return function() {
+          return "$H = " + ctx.utilFuns.round(ctx.mtheohfunction(),3)+ "$";}}())],
+        {fixed: true, strokeColor: ctx.hlColor1, fontSize: ctx.fontSize}
+            );
+            
+      // create the functionsgraph
+      
+      ctx.hfunction = function(pa){
+            var pa;
+            return -pa*(Math.log(pa)/Math.log(2))-(1-pa)*(Math.log(1-pa)/Math.log(2));
+        }
+      ctx.hgraph = ctx.pltBox.create("functiongraph",[ctx.hfunction],{strokeColor: ctx.hlColor1, fixed: true, label: false, size: 2, name: ""});
+      ctx.pointh = ctx.pltBox.create("point",
+        [ function() {return ctx.sldPA.Value()},function() {return ctx.hfunction(ctx.sldPA.Value())}],
+        {color: ctx.hlColor1, fixed: true, label: false, size: 2, name: ""}
+        );
+        
+      
+      // create Beispielfolge
+      
+      ctx.beispielfolge = ctx.bfBox.create("text",[30, 5, "Beispielfolge:"],
+      {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+        
+        ctx.cnfBox.fullUpdate();
 
-    callExercise(0);
+        ctx.updateDocumentFromSliders = function() {
+   
+        var oldPA = ctx.sldPA.Value();
+        var newPB = 1- oldPA;
+        //  console.log("pa2",ctx.sldPA.Value());
+        var oldPB = ctx.sldPB.Value();
+        var newPA = 1 - oldPB;
+        ctx.sldPA.setValue(newPA);
+        //console.log("pa3",ctx.sldPA.Value());
+        ctx.sldPB.setValue(newPB);
+    
+        }
+        ctx.cnfBox.on("update", ctx.updateDocumentFromSliders);
+        ctx.updateDocumentFromSliders();
+        //ctx.cnfBox.update();
+   
+        
+      
+      
+        changeDistL();
+        //changeDistR();
+        changeN();
+        ctx.circleBox.fullUpdate();
+        ctx.pltBox.fullUpdate();
+        ctx.zeigBox.fullUpdate();
+
+        callExercise(0);
   }
 
-  
+  function changeN(){
+    
+    }
     
   function changeDistL() {
     if (document.getElementById("distSelectL").value == "ohneG") {
@@ -327,6 +583,53 @@
       ctx.txtSldPB.setAttribute ({visible: true});
       ctx.txtSldPAIB.setAttribute ({visible: false});
       ctx.txtSldPBIA.setAttribute ({visible: false});
+      
+      ctx.hgraph.setAttribute({visible:true });
+      ctx.pointh.setAttribute({visible:true });
+      
+      ctx.circleA.setAttribute({visible:false});
+      ctx.txtcircleA.setAttribute({visible:false});
+      ctx.arcA.setAttribute({visible:false});
+      ctx.arrowAB.setAttribute({visible:false});
+      ctx.circleB.setAttribute({visible:false});
+      ctx.txtcircleB.setAttribute({visible:false});
+      ctx.arcB.setAttribute({visible:false});
+      ctx.arrowBA.setAttribute({visible:false});
+      ctx.txtPBIA.setAttribute({visible:false});
+      ctx.txtPAIA.setAttribute({visible:false});
+      ctx.txtPAIB.setAttribute({visible:false});
+      ctx.txtPBIB.setAttribute({visible:false});
+      ctx.txtPA.setAttribute({visible:false});
+      ctx.txtPB.setAttribute({visible:false});
+      
+      ctx.osimuh1.setAttribute({visible:true });
+      ctx.osimuh2.setAttribute({visible:true });
+      ctx.osimuh3.setAttribute({visible:true });
+      ctx.osimuh4.setAttribute({visible:true });
+      ctx.osimuh5.setAttribute({visible:true });
+      ctx.osimuh6.setAttribute({visible:true });
+        ctx.otheoh0.setAttribute({visible:true });
+        ctx.otheoh1.setAttribute({visible:true });
+        ctx.otheoh2.setAttribute({visible:true });
+        ctx.otheoh3.setAttribute({visible:true });
+        ctx.otheoh4.setAttribute({visible:true });
+        ctx.otheoh5.setAttribute({visible:true });
+        ctx.otheoh.setAttribute({visible:true });
+        
+        ctx.msimuh1.setAttribute({visible:false });
+      ctx.msimuh2.setAttribute({visible:false });
+      ctx.msimuh3.setAttribute({visible:false });
+      ctx.msimuh4.setAttribute({visible:false });
+      ctx.msimuh5.setAttribute({visible:false });
+      ctx.msimuh6.setAttribute({visible:false });
+        ctx.mtheoh0.setAttribute({visible:false});
+        ctx.mtheoh1.setAttribute({visible:false});
+        ctx.mtheoh2.setAttribute({visible:false});
+        ctx.mtheoh3.setAttribute({visible:false});
+        ctx.mtheoh4.setAttribute({visible:false});
+        ctx.mtheoh5.setAttribute({visible:false});
+        ctx.mtheoh.setAttribute({visible:false});
+      
     }
     else if (document.getElementById("distSelectL").value == "Markov") {
       hideSlider(ctx.sldPA, true);
@@ -337,6 +640,54 @@
       ctx.txtSldPB.setAttribute ({visible: false});
       ctx.txtSldPAIB.setAttribute ({visible: true});
       ctx.txtSldPBIA.setAttribute ({visible: true});
+      
+      ctx.hgraph.setAttribute({visible: false});
+      ctx.pointh.setAttribute({visible:false });
+      
+      ctx.circleA.setAttribute({visible:true});
+      ctx.txtcircleA.setAttribute({visible:true});
+      ctx.arcA.setAttribute({visible:true});
+      ctx.arrowAB.setAttribute({visible:true});
+      ctx.circleB.setAttribute({visible:true});
+      ctx.txtcircleB.setAttribute({visible:true});
+      ctx.arcB.setAttribute({visible:true});
+      ctx.arrowBA.setAttribute({visible:true});
+      ctx.txtPBIA.setAttribute({visible:true});
+      ctx.txtPAIA.setAttribute({visible:true});
+      ctx.txtPAIB.setAttribute({visible:true});
+      ctx.txtPBIB.setAttribute({visible:true});
+      ctx.txtPA.setAttribute({visible:true});
+      ctx.txtPB.setAttribute({visible:true});
+      
+      ctx.osimuh1.setAttribute({visible:false });
+      ctx.osimuh2.setAttribute({visible:false });
+      ctx.osimuh3.setAttribute({visible:false });
+      ctx.osimuh4.setAttribute({visible:false });
+      ctx.osimuh5.setAttribute({visible:false });
+      ctx.osimuh6.setAttribute({visible:false });
+      ctx.otheoh0.setAttribute({visible:false });
+        ctx.otheoh1.setAttribute({visible:false });
+        ctx.otheoh2.setAttribute({visible:false });
+        ctx.otheoh3.setAttribute({visible:false });
+        ctx.otheoh4.setAttribute({visible:false });
+        ctx.otheoh5.setAttribute({visible:false });
+        ctx.otheoh.setAttribute({visible:false });
+        
+        ctx.msimuh1.setAttribute({visible:true });
+      ctx.msimuh2.setAttribute({visible:true });
+      ctx.msimuh3.setAttribute({visible:true });
+      ctx.msimuh4.setAttribute({visible:true });
+      ctx.msimuh5.setAttribute({visible:true });
+      ctx.msimuh6.setAttribute({visible:true });
+      ctx.mtheoh0.setAttribute({visible:true });
+        ctx.mtheoh0.setAttribute({visible:true});
+        ctx.mtheoh1.setAttribute({visible:true});
+        ctx.mtheoh2.setAttribute({visible:true});
+        ctx.mtheoh3.setAttribute({visible:true});
+        ctx.mtheoh4.setAttribute({visible:true});
+        ctx.mtheoh5.setAttribute({visible:true});
+        ctx.mtheoh.setAttribute({visible:true});
+      
     }
     //ctx.fns[0].index = document.getElementById("distSelectL").selectedIndex;
     //setProbValues(0);

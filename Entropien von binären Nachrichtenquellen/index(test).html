@@ -63,7 +63,7 @@
     </div>
 
     <div class="flex-item">
-      <select id="distSelectL" class="highlight2" onchange="changeN()">
+      <select id="distN" class="highlight2" onchange="changeN()">
         <option  value="N10">N = 10</option>
         <option value="N100" selected="selected">N = 100</option>
         <option value="N1000" selected="selected">N = 1000</option>
@@ -537,6 +537,50 @@
       
       ctx.beispielfolge = ctx.bfBox.create("text",[30, 5, "Beispielfolge:"],
       {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+      ctx.solutionfunction1 = function(){
+            var folge = String.fromCharCode(66);
+            return folge.repeat(10);
+        }
+      ctx.solution1 = ctx.bfBox.create("text",[10,15, 
+            (function() { return function() {
+          return ctx.solutionfunction1();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        
+        ctx.solutionfunction2 = function(){
+            var folge = String.fromCharCode(66);
+            return folge.repeat(100);
+        }
+      ctx.solution2 = ctx.bfBox.create("text",[10,15, 
+            (function() { return function() {
+          return ctx.solutionfunction2();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        
+        ctx.solutionfunction3 = function(){
+            var folge = String.fromCharCode(66);
+            return folge.repeat(1000);
+        }
+      ctx.solution3 = ctx.bfBox.create("text",[10,15, 
+            (function() { return function() {
+          return ctx.solutionfunction3();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        
+        ctx.solutionfunction4 = function(){
+            var folge = String.fromCharCode(66);
+            return folge.repeat(10000);
+        }
+      ctx.solution4 = ctx.bfBox.create("text",[10,15, 
+            (function() { return function() {
+          return ctx.solutionfunction4();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        
+      ctx.solutionfunction5 = function(){
+            var folge = String.fromCharCode(66);
+            return folge.repeat(100000);
+        }
+      ctx.solution5 = ctx.bfBox.create("text",[10,15, 
+            (function() { return function() {
+          return ctx.solutionfunction5();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
         
         ctx.cnfBox.fullUpdate();
 
@@ -570,7 +614,21 @@
   }
 
   function changeN(){
-    
+         if(document.getElementById("distN").value == "N10"){
+            ctx.solution1.setAttribute({visible:true });
+            ctx.solution2.setAttribute({visible:false });
+            ctx.solution3.setAttribute({visible:false });
+            ctx.solution4.setAttribute({visible:false });
+            ctx.solution5.setAttribute({visible:false });
+         }else if(document.getElementById("distN").value == "N100"){
+            ctx.solution2.setAttribute({visible:true });
+         }else if(document.getElementById("distN").value == "N1000"){
+            ctx.solution3.setAttribute({visible:true });
+         }else if(document.getElementById("distN").value == "N10000"){
+            ctx.solution4.setAttribute({visible:true });
+         }else if(document.getElementById("distN").value == "N100000"){
+            ctx.solution5.setAttribute({visible:true });
+         }
     }
     
   function changeDistL() {

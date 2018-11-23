@@ -65,10 +65,10 @@
     <div class="flex-item">
       <select id="distN" class="highlight2" onchange="changeN()">
         <option  value="N10">N = 10</option>
-        <option value="N100" selected="selected">N = 100</option>
-        <option value="N1000" selected="selected">N = 1000</option>
-        <option value="N10000" selected="selected">N = 10000</option>
-        <option value="N100000" selected="selected">N = 100000</option>
+        <option  value="N100" selected="selected">N = 100</option>
+        <option  value="N1000" selected="selected">N = 1000</option>
+        <option  value="N10000" selected="selected">N = 10000</option>
+        <option  value="N100000" selected="selected">N = 100000</option>
       </select>
       <br><br>
     <button id="start" class="button" onclick="startbsf">Start</button>
@@ -111,7 +111,7 @@
       ctx.bgColor    = bodyStyles.getPropertyValue("background-color");
       ctx.textColor  = bodyStyles.getPropertyValue("color");
       ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl1")).getPropertyValue("color");
-      
+      //ctx.wordbreak   = window.getComputedStyle(document.getElementById("wordbreak")).getPropertyValue("word-break");
 
       // array that holds sliders and distribution values for both config boxes
       //ctx.fns = [
@@ -134,6 +134,7 @@
       JXG.Options.text.useMathJax = true;
       JXG.Options.navbar.strokeColor = ctx.textColor;
       JXG.Options.navbar.fontSize = ctx.fontSize;
+      //JXG.Options.text.cssClass = "wordbreak";
 
       // array that stores all exercise buttons
       ctx.exButtons = [
@@ -537,50 +538,44 @@
       
       ctx.beispielfolge = ctx.bfBox.create("text",[30, 5, "Beispielfolge:"],
       {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
-      ctx.solutionfunction1 = function(){
-            var folge = String.fromCharCode(66);
-            return folge.repeat(10);
-        }
-      ctx.solution1 = ctx.bfBox.create("text",[10,15, 
-            (function() { return function() {
-          return ctx.solutionfunction1();}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      
+      
         
-        ctx.solutionfunction2 = function(){
-            var folge = String.fromCharCode(66);
-            return folge.repeat(100);
-        }
-      ctx.solution2 = ctx.bfBox.create("text",[10,15, 
-            (function() { return function() {
-          return ctx.solutionfunction2();}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        //ctx.solutionfunction2 = function(){
+          //  var folge = String.fromCharCode(66);
+            //return folge.repeat(100);
+        //}
+      //ctx.solution2 = ctx.bfBox.create("text",[5,25, 
+        //    (function() { return function() {
+          //return ctx.solutionfunction2();}}())],
+        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-        ctx.solutionfunction3 = function(){
-            var folge = String.fromCharCode(66);
-            return folge.repeat(1000);
-        }
-      ctx.solution3 = ctx.bfBox.create("text",[10,15, 
-            (function() { return function() {
-          return ctx.solutionfunction3();}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        //ctx.solutionfunction3 = function(){
+          //  var folge = String.fromCharCode(66);
+            //return folge.repeat(500);
+        //}
+      //ctx.solution3 = ctx.bfBox.create("text",[5,53, 
+        //    (function() { return function() {
+         // return ctx.solutionfunction3();}}())],
+        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-        ctx.solutionfunction4 = function(){
-            var folge = String.fromCharCode(66);
-            return folge.repeat(10000);
-        }
-      ctx.solution4 = ctx.bfBox.create("text",[10,15, 
-            (function() { return function() {
-          return ctx.solutionfunction4();}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+        //ctx.solutionfunction4 = function(){
+          //  var folge = String.fromCharCode(66);
+            //return folge.repeat(500);
+        //}
+      //ctx.solution4 = ctx.bfBox.create("text",[5,53, 
+        //    (function() { return function() {
+          //return ctx.solutionfunction4();}}())],
+        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-      ctx.solutionfunction5 = function(){
-            var folge = String.fromCharCode(66);
-            return folge.repeat(100000);
-        }
-      ctx.solution5 = ctx.bfBox.create("text",[10,15, 
-            (function() { return function() {
-          return ctx.solutionfunction5();}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize});
+      //ctx.solutionfunction5 = function(){
+        //    var folge = String.fromCharCode(66);
+          //  return folge.repeat(500);
+        //}
+      //ctx.solution5 = ctx.bfBox.create("text",[5,53, 
+        //    (function() { return function() {
+          //return ctx.solutionfunction5();}}())],
+        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
         
         ctx.cnfBox.fullUpdate();
 
@@ -605,29 +600,97 @@
       
         changeDistL();
         //changeDistR();
-        changeN();
+        //changeN();
         ctx.circleBox.fullUpdate();
         ctx.pltBox.fullUpdate();
         ctx.zeigBox.fullUpdate();
+        ctx.bfBox.fullUpdate();
 
         callExercise(0);
   }
+  
+   function solutionfunction(){
+      var folge  = [];
+        for (i=0;i<10;i++)
+            {
+            function updateRandom(){
+                var PA = ctx.sldPA.Value(),
+                PB = 1-ctx.sldPA.Value(),
+                P = Math.random(),
+                n = Math.random()/2;
+                if(P < PA)
+                    return 0+n;
+                if(P < 1)
+                    return 0.5+n;
+            }
+                var objects = ["A","B"];
+                var length = 10;
+                var randomIndex = Math.floor((objects.length*updateRandom()));
+               //  console.log("d",updateRandom());
+           //     console.log("p",randomIndex);
+              //  var folge = new Array(10);
+              //  folge[i] = objects[randomIndex];
+         //   var l=i;
+          
+             folge[i] =objects[randomIndex];
+               // return object;
+                //ctx.solutionfunction1();
+           //    console.log("i",folge[i]);
+              
+            
+               //  console.log("i",l);
+              //   console.log("T",folge);
+               }
+                 console.log("i",folge);
+               // console.log("k",folge);
+                //solutionfunction();
+               // updateRandom();
+               folge=folge.join("");
+                return folge ;
+                //zahla = 10*PA,
+                //zahlb = 10*PB,
+                //A = String.fromCharCode(65),
+                //B = String.fromCharCode(66);
+            //return A.repeat(zahla)+B.repeat(zahlb);
+        }
 
   function changeN(){
+        ctx.solution1 = ctx.bfBox.create("text",[10,15, 
+            (function() {
+          return solutionfunction();})],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
          if(document.getElementById("distN").value == "N10"){
+         
             ctx.solution1.setAttribute({visible:true });
-            ctx.solution2.setAttribute({visible:false });
-            ctx.solution3.setAttribute({visible:false });
-            ctx.solution4.setAttribute({visible:false });
-            ctx.solution5.setAttribute({visible:false });
-         }else if(document.getElementById("distN").value == "N100"){
-            ctx.solution2.setAttribute({visible:true });
-         }else if(document.getElementById("distN").value == "N1000"){
-            ctx.solution3.setAttribute({visible:true });
-         }else if(document.getElementById("distN").value == "N10000"){
-            ctx.solution4.setAttribute({visible:true });
-         }else if(document.getElementById("distN").value == "N100000"){
-            ctx.solution5.setAttribute({visible:true });
+            
+           // ctx.solution2.setAttribute({visible:false });
+            //ctx.solution3.setAttribute({visible:false });
+           // ctx.solution4.setAttribute({visible:false });
+           // ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N100"){
+            //ctx.solution2.setAttribute({visible:true });
+           ctx.solution1.setAttribute({visible:false });
+            //ctx.solution3.setAttribute({visible:false });
+            //ctx.solution4.setAttribute({visible:false });
+            //ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N1000"){
+            //ctx.solution3.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+            //ctx.solution2.setAttribute({visible:false });
+            //ctx.solution4.setAttribute({visible:false });
+            //ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N10000"){
+            //ctx.solution4.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+           // ctx.solution2.setAttribute({visible:false });
+           // ctx.solution3.setAttribute({visible:false });
+            //ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N100000"){
+            //ctx.solution5.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+            //ctx.solution2.setAttribute({visible:false });
+            //ctx.solution3.setAttribute({visible:false });
+            //ctx.solution4.setAttribute({visible:false });
          }
     }
     

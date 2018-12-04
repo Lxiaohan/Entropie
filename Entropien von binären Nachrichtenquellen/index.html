@@ -554,3 +554,142 @@
    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+ if(document.getElementById("distN").value == "N10"){
+           // l=10;
+           switch(k) {
+                case 0:
+                        h1 = 0;
+                        h2 = 0;
+                        h3 = 0;
+                        h4 = 0;
+                        h5 = 0;
+                        h6 = 0;
+                        break;
+                case 1:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.493,0.252);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                           h3 = 0.516;
+                           h4 = 0.532;
+                           h5 = 0.517;
+                           h6 = 0.387;
+                        break;
+                case 2:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.493,0.612,0.718,0.723);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.538;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 3:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.718,0.765,0.723,0.918,0.829,0.792);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.667;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 4:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.918,0.946,0.987);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.833;
+                        h4 = 0.630;
+                        h5 = 0.517;
+                        h6 = 0.387;
+                        break;
+                case 5:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        h2 = 1;
+                        h3 = 1;
+                        h4 = 1;
+                        h5 = 1;
+                        h6 = 1;
+                        break;
+               default:
+                    break;
+        
+                }
+           
+               
+           
+         } if(document.getElementById("distN").value == "N100"){
+           //l=100;
+           
+               //var items1 = Array(0.827,0.827,0.634,0.701,0.722,0.795,0.584,0.529,0.680,0.658,0.610,0.881);
+                        //h1 = items1[Math.floor(Math.random()*items1.length)];
+                        h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                       // var items = Array(0.493,0.252);
+                        //h2 = items[Math.floor(Math.random()*items.length)];
+                           //h3 = h1;
+                           //h4 = h1-0.03;
+                           //h5 = h1-0.11;
+                           //h6 = h1-0.27;
+           
+
+                }
+        
+         } if(document.getElementById("distN").value == "N1000"){
+            //l=450; 
+             
+        
+             // var items = Array(0.701,0.704,0.687,0.758,0.724,0.741,0.708,0.689,0.738,0.771);
+               //         h1 = items[Math.floor(Math.random()*items.length)]; 
+            // var h1 =-(k/1000)*(Math.log(k/1000)/Math.log(2))-(1-(k/1000))*(Math.log(1-(k/1000))/Math.log(2));
+                //h2 = h1;
+               //h3 = h1;
+               //h4 = h1-0.02;
+               //h5 = h1-0.04;
+             //h6 = h1-0.06;
+           
+             
+         } if(document.getElementById("distN").value == "N10000"){
+           // l=460;
+             
+               //var items = Array(0.722,0.724,0.716,0.720,0.719,0.717,0.707,0.723,0.709,0.718);
+                 //       h1 = items[Math.floor(Math.random()*items.length)]; 
+             //var h1 =-(k/10000)*(Math.log(k/10000)/Math.log(2))-(1-(k/10000))*(Math.log(1-(k/10000))/Math.log(2));
+               //h2 = h1;
+               //h3 = h1;
+               //h4 = h1;
+               //h5 = h1;
+             //h6 = h1-0.01;
+           
+             
+         } if(document.getElementById("distN").value == "N100000"){
+            //l=500;
+             var PA = ctx.sldPA.Value();
+             var H = -ctx.sldPA.Value()*(Math.log(ctx.sldPA.Value())/Math.log(2))-ctx.sldPB.Value()*(Math.log(ctx.sldPB.Value())/Math.log(2));
+             var items = Array(H-0.004,H-0.003,H-0.002,H-0.001,H,H+0.001,H+0.002,H+0.003,H+0.004,H+0.005);
+             var h1 = items[Math.floor(Math.random()*items.length)];
+             //var h1 =-(k/500)*(Math.log(k/500)/Math.log(2))-(1-(k/500))*(Math.log(1-(k/500))/Math.log(2));
+             //h2 = h1;
+               //h3 = h1;
+               //h4 = h1;
+               //h5 = h1;
+             //h6 = h1;
+         }
+                //var h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                return {
+                    H1: h1,
+                    //H2: h2,
+                    //H3: h3,
+                    //H4: h4,
+                    //H5: h5,
+                    //H6: h6,
+                    arr:folge
+                       }

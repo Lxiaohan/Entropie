@@ -8,7 +8,6 @@
     <script type="text/javascript"            src="/MathJax/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full,local/mwMathJaxConfig"></script>
     <script type="text/javascript"            src="/jsxgraph/jsxgraphcore.js"></script>
     <link   type="text/css" rel="stylesheet" href="/jsxgraph/jsxgraph.css" />
-
     <link   type="text/css" rel="stylesheet" href="/lnt_applets/style.css" />
     <script type="text/javascript"            src="/lnt_applets/utilfuns.js"></script>
 -->
@@ -33,7 +32,7 @@
   <!-- Title  -->
   <div class="flexContainerHead totalWidth">
     <div class="flexItemHead">
-      <h1> Entropien von binären Nachrichtenquellen(M=2)</h1>
+      <h1> Entropien von binären Nachrichtenquellen (M=2)</h1>
       <span class="copyright">
         © 2018 Lehrstuhl f&uuml;r Nachrichtentechnik, Technische Universit&auml;t M&uuml;nchen<br>
         Authors: Xiaohan Liu &amp; Tasnad Kernetzky
@@ -43,7 +42,7 @@
 
   <div class="flexContainer totalWidth">
     <div class="flex-item">
-        <p>Binärquelle</p>
+        <p class="highlight2">Binärquelle</p>
       <select id="distSelectL" class="highlight2" onchange="changeDistL()">
       <option  value="Markov">Markov</option>
         <option value="ohneG" selected="selected">Ohne Gedächtnis</option>
@@ -63,7 +62,7 @@
     </div>
 
     <div class="flex-item">
-      <select id="distN" class="highlight2" onchange="changeN()">
+      <select id="distN" class="highlight2" onclick="changeN()">
         <option  value="N10">N = 10</option>
         <option  value="N100" selected="selected">N = 100</option>
         <option  value="N1000" selected="selected">N = 1000</option>
@@ -71,7 +70,7 @@
         <option  value="N100000" selected="selected">N = 100000</option>
       </select>
       <br><br>
-    <button id="start" class="button" onclick="startbsf">Start</button>
+    <button id="start" class="button" onclick="startbsf()">Start</button>
         
     <br><br>
      <div id="bfBoxHTML" class="jxgBox jxgBoxBorder" style="width: 250px; height: 450px"></div>
@@ -104,7 +103,6 @@
     function setup() {
       // context, holds most of the variables
       ctx = {};
-
       // Get font size and colors from CSS
       var bodyStyles = window.getComputedStyle(document.body);
       ctx.fontSize = bodyStyles.getPropertyValue("font-size");
@@ -112,30 +110,24 @@
       ctx.textColor  = bodyStyles.getPropertyValue("color");
       ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl1")).getPropertyValue("color");
       //ctx.wordbreak   = window.getComputedStyle(document.getElementById("wordbreak")).getPropertyValue("word-break");
-
       // array that holds sliders and distribution values for both config boxes
       //ctx.fns = [
        // {"color": ctx.hlColor1},
        // {"color": ctx.hlColor2}
       //];
-
       // assign the dropdown lists
       //ctx.fns[0].index = document.getElementById("distSelectL").selectedIndex;
       //ctx.fns[1].index = document.getElementById("distSelectR").selectedIndex;
-
       //ctx.fns[0].index = 1;
       //ctx.fns[1].index = 0;
-
       // Sets up the table for probability values
       // create rows and cells needed for the table
     
-
       // JXG settings
       JXG.Options.text.useMathJax = true;
       JXG.Options.navbar.strokeColor = ctx.textColor;
       JXG.Options.navbar.fontSize = ctx.fontSize;
       //JXG.Options.text.cssClass = "wordbreak";
-
       // array that stores all exercise buttons
       ctx.exButtons = [
       document.getElementById("reset"),
@@ -146,16 +138,12 @@
       document.getElementById("ex5"),
       document.getElementById("ex6"),
       ];
-
       // load utilfuns
       ctx.utilFuns = getUtilFuns();
-
       // load utilfunctions for distribution applet
       ctx.utilDist = getUtilDist();
-
       // load parameters from preset database
       ctx.verteilungDb = loadDb();
-
       // set up the jxg boxes
       ctx.cnfBox = JXG.JSXGraph.initBoard("configBox1HTML", {
         showCopyright: false,
@@ -181,7 +169,6 @@
         zoom: {enabled:false}, pan: {enabled:false},
         boundingbox: [0, 0, 100, 100]
       });
-
       ctx.pltBox = JXG.JSXGraph.initBoard("pltBoxHTML", {
         showCopyright: false,
         axis: false,
@@ -199,13 +186,12 @@
       });
       // update the pltBox whenever changes are made
       ctx.cnfBox.addChild(ctx.pltBox);
-      ctx.cnfBox.addChild(ctx.zeigBox);
+      //ctx.cnfBox.addChild(ctx.zeigBox);
       ctx.cnfBox.addChild(ctx.circleBox);
       ctx.bfBox.addChild(ctx.pltBox);
-      ctx.bfBox.addChild(ctx.zeigBox);
+      //ctx.bfBox.addChild(ctx.zeigBox);
       ctx.bfBox.addChild(ctx.circleBox);
       
-
       // set colors
       ctx.cnfBox.containerObj.style.backgroundColor = ctx.bgColor;
       ctx.cnfBox.options.label.strokeColor = ctx.textColor;
@@ -217,21 +203,16 @@
       ctx.bfBox.options.label.strokeColor = ctx.textColor;
       ctx.circleBox.containerObj.style.backgroundColor = ctx.bgColor;
       ctx.circleBox.options.label.strokeColor = ctx.textColor;
-
-
       // axis
       ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
-        name: "$P_A$",
+        name: "$p$<sub>A</sub>",
         withLabel: true, label: {position: "rt", offset: [-40, -25], fontSize: ctx.fontSize}
       });
-
       ctx.pltBox.create("axis", [[0, 0], [0, 1]], {
         name: "$H$",
         withLabel: true, label: {position: "rt", offset: [20, -25], fontSize: ctx.fontSize, rotate: 90}
       });
-
     
-
       // create sliders
       
       ctx.sldPA = ctx.cnfBox.create("slider", [[10,20], [90,20], [0, 0.2, 1]],
@@ -240,7 +221,7 @@
       //hideSlider(ctx.sldA, true);
       ctx.txtSldPA = ctx.cnfBox.create("text", [10, 30,
         (function() { return function() {
-          return "$P_A =" + ctx.utilFuns.round(ctx.sldPA.Value(), 2) + "$";}}())],
+          return "$p$<sub>A</sub> = " + ctx.utilFuns.round(ctx.sldPA.Value(), 2);}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
       
@@ -249,8 +230,8 @@
       );
       //hideSlider(ctx.sldB, true);
       ctx.txtSldPB = ctx.cnfBox.create("text", [10, 55,
-        (function() { return function() {
-          return "$P_B =" + ctx.utilFuns.round(ctx.sldPB.Value(), 2) + "$";}}())],
+        (function() { 
+          return "$p$<sub>B</sub> = " + ctx.utilFuns.round(ctx.sldPB.Value(), 2);})],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
       ctx.sldPAIB = ctx.cnfBox.create("slider", [[10,20], [90,20], [0, 0.7, 1]],
@@ -259,7 +240,7 @@
      // hideSlider(ctx.sldAIB, true);
       ctx.txtSldPAIB = ctx.cnfBox.create("text", [10, 30,
         (function() { return function() {
-          return "$P$<sub>A|B</sub> = " + ctx.utilFuns.round(ctx.sldPAIB.Value(), 2);}}())],
+          return "$p$<sub>A|B</sub> = " + ctx.utilFuns.round(ctx.sldPAIB.Value(), 2);}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
       ctx.sldPBIA = ctx.cnfBox.create("slider", [[10,45], [90,45], [0, 0.1, 1]],
@@ -268,17 +249,17 @@
      // hideSlider(ctx.sldBIA, true);
       ctx.txtSldPBIA = ctx.cnfBox.create("text", [10, 55,
         (function() { return function() {
-          return "$P$<sub>B|A</sub> = " + ctx.utilFuns.round(ctx.sldPBIA.Value(), 2);}}())],
+          return "$p$<sub>B|A</sub> = " + ctx.utilFuns.round(ctx.sldPBIA.Value(), 2);}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
       );
-      ctx.sldN = ctx.cnfBox.create("slider", [[10,70], [90,70], [10,100000,100000]],
-        {withLabel: false, snapWidth: 1}
-      );
-      ctx.txtSldN = ctx.cnfBox.create("text", [10, 80,
-        (function() { return function() {
-          return "$N = " + ctx.utilFuns.round(ctx.sldN.Value(),1)+ "$";}}())],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
-      );
+     // ctx.sldN = ctx.cnfBox.create("slider", [[10,70], [90,70], [Math.pow(10,1),Math.pow(10,5),Math.pow(10,5)]],
+       // {withLabel: false, snapWidth: 1000}
+      //);
+      //ctx.txtSldN = ctx.cnfBox.create("text", [10, 80,
+        //(function() { return function() {
+          //return "$N = " + ctx.utilFuns.round(ctx.sldN.Value(),1)+ "$";}}())],
+        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
+     // );
       
       // create Markovdiagramm
       ctx.circleA = ctx.circleBox.create("circle",[[30,45],[30,60]],
@@ -327,43 +308,49 @@
         
        //create Solution
        
-        ctx.simu = ctx.zeigBox.create("text",[5, 25, "Simulationsergebnis:"],
+        ctx.simu = ctx.zeigBox.create("text",[5, 25, "Simulation:"],
             {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
         ctx.theo = ctx.zeigBox.create("text",[5, 65, "theoretisch:"],
             {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
             
                 //Simulation(ohne gedächtnis)
-                
-        ctx.osimuh1 = ctx.zeigBox.create("text",[30,25, 
+        
+        ctx.osimuh1 = ctx.zeigBox.create("text",[20,25, 
             (function() { return function() {
-          return "$H_1 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_1 = " + ctx.utilFuns.round(solutionfunction().H1,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
-        ctx.osimuh2 = ctx.zeigBox.create("text",[50,25, 
+        //ctx.osimuh1.setAttribute({visible:false});
+        ctx.osimuh2 = ctx.zeigBox.create("text",[45,25, 
             (function() { return function() {
-          return "$H_2 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_2 = " + ctx.utilFuns.round(solutionfunction().H2,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
+        //ctx.osimuh2.setAttribute({visible:false});
         ctx.osimuh3 = ctx.zeigBox.create("text",[70,25, 
             (function() { return function() {
-          return "$H_3 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_3 = " + ctx.utilFuns.round(solutionfunction().H3,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
-        ctx.osimuh4 = ctx.zeigBox.create("text",[30,45, 
+        //ctx.osimuh3.setAttribute({visible:false});
+        ctx.osimuh4 = ctx.zeigBox.create("text",[20,45, 
             (function() { return function() {
-          return "$H_4 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_4 = " + ctx.utilFuns.round(solutionfunction().H4,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
-        ctx.osimuh5 = ctx.zeigBox.create("text",[50,45, 
+       // ctx.osimuh4.setAttribute({visible:false});
+        ctx.osimuh5 = ctx.zeigBox.create("text",[45,45, 
             (function() { return function() {
-          return "$H_5 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_5 = " + ctx.utilFuns.round(solutionfunction().H5,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
+                //ctx.osimuh5.setAttribute({visible:false});
         ctx.osimuh6 = ctx.zeigBox.create("text",[70,45, 
             (function() { return function() {
-          return "$H_6 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_6 = " + ctx.utilFuns.round(solutionfunction().H6,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
+               // ctx.osimuh6.setAttribute({visible:false});
                 //theoretisch(ohne gedächtnis)
         
         ctx.otheoh0function = function(){
@@ -413,32 +400,32 @@
                 
         ctx.msimuh1 = ctx.zeigBox.create("text",[30,25, 
             (function() { return function() {
-          return "$H_1 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_1 = " + ctx.utilFuns.round(solutionfunction().H1,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh2 = ctx.zeigBox.create("text",[50,25, 
             (function() { return function() {
-          return "$H_2 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_2 = " + ctx.utilFuns.round(solutionfunction().H2,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh3 = ctx.zeigBox.create("text",[70,25, 
             (function() { return function() {
-          return "$H_3 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_3 = " + ctx.utilFuns.round(solutionfunction().H3,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh4 = ctx.zeigBox.create("text",[30,45, 
             (function() { return function() {
-          return "$H_4 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_4 = " + ctx.utilFuns.round(solutionfunction().H4,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh5 = ctx.zeigBox.create("text",[50,45, 
             (function() { return function() {
-          return "$H_5 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_5 = " + ctx.utilFuns.round(solutionfunction().H5,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh6 = ctx.zeigBox.create("text",[70,45, 
             (function() { return function() {
-          return "$H_6 = " + ctx.utilFuns.round(ctx.sldPB.Value(),3)+ "$";}}())],
+          return "$H_6 = " + ctx.utilFuns.round(solutionfunction().H6,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
             
@@ -538,59 +525,66 @@
       
       ctx.beispielfolge = ctx.bfBox.create("text",[30, 5, "Beispielfolge:"],
       {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
+      ctx.solution1 = ctx.bfBox.create("text",[5,15, 
+            ( function() { return function() {
+          return solutionfunction().arr;}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
       
-      
+      ctx.solution2 = ctx.bfBox.create("text",[5,25, 
+            ( function() { return function() {
+          return solutionzweifun();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-        //ctx.solutionfunction2 = function(){
-          //  var folge = String.fromCharCode(66);
-            //return folge.repeat(100);
-        //}
-      //ctx.solution2 = ctx.bfBox.create("text",[5,25, 
-        //    (function() { return function() {
-          //return ctx.solutionfunction2();}}())],
-        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
+      ctx.solution3 = ctx.bfBox.create("text",[5,53, 
+            (function() { return function() {
+          return solutiondreifun();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-        //ctx.solutionfunction3 = function(){
-          //  var folge = String.fromCharCode(66);
-            //return folge.repeat(500);
-        //}
-      //ctx.solution3 = ctx.bfBox.create("text",[5,53, 
-        //    (function() { return function() {
-         // return ctx.solutionfunction3();}}())],
-        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
+      ctx.solution4 = ctx.bfBox.create("text",[5,53, 
+            (function() { return function() {
+          return solutionvierfun();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
+     
+      ctx.solution5 = ctx.bfBox.create("text",[5,53, 
+            (function() { return function() {
+          return solutionfivefun();}}())],
+        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
         
-        //ctx.solutionfunction4 = function(){
-          //  var folge = String.fromCharCode(66);
-            //return folge.repeat(500);
-        //}
-      //ctx.solution4 = ctx.bfBox.create("text",[5,53, 
-        //    (function() { return function() {
-          //return ctx.solutionfunction4();}}())],
-        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize,cssStyle:"word-break: break-all"});
+        ctx.solution1.setAttribute({visible:false });
+        ctx.solution2.setAttribute({visible:false });
+        ctx.solution3.setAttribute({visible:false });
+        ctx.solution4.setAttribute({visible:false });
+        ctx.solution5.setAttribute({visible:false });
         
-      //ctx.solutionfunction5 = function(){
-        //    var folge = String.fromCharCode(66);
-          //  return folge.repeat(500);
-        //}
-      //ctx.solution5 = ctx.bfBox.create("text",[5,53, 
-        //    (function() { return function() {
-          //return ctx.solutionfunction5();}}())],
-        //{fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
-        
-        ctx.cnfBox.fullUpdate();
-
+        //ctx.cnfBox.fullUpdate();
         ctx.updateDocumentFromSliders = function() {
-   
-        var oldPA = ctx.sldPA.Value();
-        var newPB = 1- oldPA;
-        //  console.log("pa2",ctx.sldPA.Value());
-        var oldPB = ctx.sldPB.Value();
-        var newPA = 1 - oldPB;
-        ctx.sldPA.setValue(newPA);
-        //console.log("pa3",ctx.sldPA.Value());
+        var oldPB =ctx.utilFuns.round(ctx.sldPB.Value(), 2)
+             //console.log("a",oldPB);
+        var newPA =ctx.utilFuns.round(1 - oldPB, 2);
+        //console.log("b",newPA);
+        var oldPA =ctx.utilFuns.round(ctx.sldPA.Value(), 2)
+        //console.log("c",oldPA);
+        var newPB = ctx.utilFuns.round(1 - oldPA, 2);
+        //console.log("d",newPB);
+        
+         ctx.sldPA.setValue(newPA);
         ctx.sldPB.setValue(newPB);
+       
+        //ctx.sldPB.setValue(1-ctx.sldPA.Value());
+        
+        
+        
+        //ctx.sldPA.setValue(1-ctx.sldPB.Value());
+      }
+      
+       //  console.log("pa2",ctx.sldPA.Value());
+        //var oldPB = ctx.sldPB.Value();
+        //var newPA = 1 - oldPB;
+        //ctx.sldPA.setValue(newPA);
+        //console.log("pa3",ctx.sldPA.Value());
+        //ctx.sldPB.setValue(newPB);
     
-        }
+        
         ctx.cnfBox.on("update", ctx.updateDocumentFromSliders);
         ctx.updateDocumentFromSliders();
         //ctx.cnfBox.update();
@@ -601,17 +595,309 @@
         changeDistL();
         //changeDistR();
         //changeN();
+        ctx.cnfBox.fullUpdate();
         ctx.circleBox.fullUpdate();
         ctx.pltBox.fullUpdate();
         ctx.zeigBox.fullUpdate();
         ctx.bfBox.fullUpdate();
-
         callExercise(0);
   }
   
+  function startbsf(){
+        //l=0
+        function changeN(){
+           
+        if(document.getElementById("distN").value == "N10"){
+            
+            ctx.solution1.setAttribute({visible:true });
+            ctx.solution2.setAttribute({visible:false });
+            ctx.solution3.setAttribute({visible:false });
+            ctx.solution4.setAttribute({visible:false });
+            ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N100"){
+           
+            ctx.solution2.setAttribute({visible:true });
+           ctx.solution1.setAttribute({visible:false });
+            ctx.solution3.setAttribute({visible:false });
+            ctx.solution4.setAttribute({visible:false });
+            ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N1000"){
+             
+            ctx.solution3.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+            ctx.solution2.setAttribute({visible:false });
+            ctx.solution4.setAttribute({visible:false });
+            ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N10000"){
+             
+            ctx.solution4.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+            ctx.solution2.setAttribute({visible:false });
+           ctx.solution3.setAttribute({visible:false });
+            ctx.solution5.setAttribute({visible:false });
+         } if(document.getElementById("distN").value == "N100000"){
+             //ctx.osimuh1.setAttribute({visible:true });
+             //ctx.osimuh2.setAttribute({visible:true });
+            //ctx.osimuh3.setAttribute({visible:true });
+            //ctx.osimuh4.setAttribute({visible:true });
+            //ctx.osimuh5.setAttribute({visible:true });
+            //ctx.osimuh6.setAttribute({visible:true });
+            ctx.solution5.setAttribute({visible:true });
+             ctx.solution1.setAttribute({visible:false });
+            ctx.solution2.setAttribute({visible:false });
+            ctx.solution3.setAttribute({visible:false });
+            ctx.solution4.setAttribute({visible:false });
+         }
+         
+    }
+        
+        changeN();
+        //ctx.bfBox.fullUpdate();
+         //changeN();
+         ctx.circleBox.fullUpdate();
+        ctx.pltBox.fullUpdate();
+        ctx.zeigBox.fullUpdate();
+        ctx.bfBox.fullUpdate();
+        ctx.cnfBox.fullUpdate();
+     // l++;
+      //console.log('l',l);
+  }
+      
    function solutionfunction(){
       var folge  = [];
+      //var l=0;
+       //if(document.getElementById("distN").value == "N10"){
+         //   l=10;
+         //} if(document.getElementById("distN").value == "N100"){
+           // l=100;
+         //} if(document.getElementById("distN").value == "N1000"){
+           // l=450;    
+         //} if(document.getElementById("distN").value == "N10000"){
+           // l=460;
+         //} if(document.getElementById("distN").value == "N100000"){
+           // l=500;
+         //}
+        var k=0;
+       //l=0;
         for (i=0;i<10;i++)
+            {
+               // var k=0;
+            function updateRandom(){
+               //var k=0;
+                var PA = ctx.sldPA.Value(),
+                PB = 1-ctx.sldPA.Value(),
+                P = Math.random(),
+                n = Math.random()/2;
+                if(P < PA)
+                    return 0+n;
+                if(P < 1)
+                    return 0.5+n;
+            }
+               //var k=0;
+                var objects = ["A","B"];
+                var length = 10;
+                //console.log("update",updateRandom());
+                var randomIndex = Math.floor((objects.length*updateRandom()));
+          
+             folge[i] =objects[randomIndex];
+                //console.log("randomIndex",randomIndex);
+                //console.log("folge",folge[1]);
+                //if(folge[i]=='A')
+                    if(folge[i] ==objects[0])
+                    k++;
+                //console.log('folge',folge[i]);
+                //console.log('r',randomIndex);
+                //console.log('k',k);
+               
+               }
+                 //console.log("i",folge);
+              // l++;
+        //console.log('l',l)
+               folge=folge.join("");
+        //var l=0;
+       if(document.getElementById("distN").value == "N10"){
+           // l=10;
+           switch(k) {
+                case 0:
+                        h1 = 0;
+                        h2 = 0;
+                        h3 = 0;
+                        h4 = 0;
+                        h5 = 0;
+                        h6 = 0;
+                        break;
+                case 1:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.493,0.252);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                           h3 = 0.516;
+                           h4 = 0.532;
+                           h5 = 0.517;
+                           h6 = 0.387;
+                        break;
+                case 2:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.493,0.612,0.718,0.723);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.538;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 3:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.718,0.765,0.723,0.918,0.829,0.792);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.667;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 4:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        var items = Array(0.918,0.946,0.987);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.833;
+                        h4 = 0.630;
+                        h5 = 0.517;
+                        h6 = 0.387;
+                        break;
+                case 5:
+                        h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                        h2 = 1;
+                        h3 = 1;
+                        h4 = 1;
+                        h5 = 1;
+                        h6 = 1;
+                        break;
+        
+                }
+           
+               
+           
+         } if(document.getElementById("distN").value == "N100"){
+           //l=100;
+             switch(k) {
+                case 0:
+                        h1 = 0;
+                        h2 = 0;
+                        h3 = 0;
+                        h4 = 0;
+                        h5 = 0;
+                        h6 = 0;
+                        break;
+                case 1:
+                        var items1 = Array(0.827,0.827,0.634,0.701,0.722,0.795,0.584,0.529,0.680,0.658,0.610,0.881);
+                        h1 = items1[Math.floor(Math.random()*items1.length)];
+                        //h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                        var items = Array(0.493,0.252);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                           h3 = 0.516;
+                           h4 = 0.532;
+                           h5 = 0.517;
+                           h6 = 0.387;
+                        break;
+                case 2:
+                        h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                        var items = Array(0.493,0.612,0.718,0.723);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.538;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 3:
+                        h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                        var items = Array(0.718,0.765,0.723,0.918,0.829,0.792);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.667;
+                        h4 = 0.532;
+                        h5 = 0.450;
+                        h6 = 0.387;
+                        break;
+                case 4:
+                        h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                        var items = Array(0.918,0.946,0.987);
+                        h2 = items[Math.floor(Math.random()*items.length)];
+                        h3 = 0.833;
+                        h4 = 0.630;
+                        h5 = 0.517;
+                        h6 = 0.387;
+                        break;
+                case 5:
+                        h1 =-(k/100)*(Math.log(k/100)/Math.log(2))-(1-(k/100))*(Math.log(1-(k/100))/Math.log(2));
+                        h2 = 1;
+                        h3 = 1;
+                        h4 = 1;
+                        h5 = 1;
+                        h6 = 1;
+                        break;
+        
+                }
+        
+         } if(document.getElementById("distN").value == "N1000"){
+            //l=450; 
+             if(k==0){
+               h1 = 0;
+           }else{
+             //var h1 =-(k/1000)*(Math.log(k/1000)/Math.log(2))-(1-(k/1000))*(Math.log(1-(k/1000))/Math.log(2));
+               var items = Array(0.701,0.704,0.687,0.758,0.724,0.741,0.708,0.689,0.738,0.771);
+                        h1 = items[Math.floor(Math.random()*items.length)]; 
+           }
+              //var items = Array(0.701,0.704,0.687,0.758,0.724,0.741,0.708,0.689,0.738,0.771);
+                       // h1 = items[Math.floor(Math.random()*items.length)]; 
+            // var h1 =-(k/1000)*(Math.log(k/1000)/Math.log(2))-(1-(k/1000))*(Math.log(1-(k/1000))/Math.log(2));
+                h2 = h1;
+               h3 = h1;
+               h4 = h1-0.02;
+               h5 = h1-0.04;
+             h6 = h1-0.06;
+             
+         } if(document.getElementById("distN").value == "N10000"){
+           // l=460;
+             if(k==0){
+               h1 = 0;
+           }else{
+             //var h1 =-(k/10000)*(Math.log(k/10000)/Math.log(2))-(1-(k/10000))*(Math.log(1-(k/10000))/Math.log(2));
+               var items = Array(0.722,0.724,0.716,0.720,0.719,0.717,0.707,0.723,0.709,0.718);
+                        h1 = items[Math.floor(Math.random()*items.length)]; 
+             //var h1 =-(k/10000)*(Math.log(k/10000)/Math.log(2))-(1-(k/10000))*(Math.log(1-(k/10000))/Math.log(2));
+               h2 = h1;
+               h3 = h1;
+               h4 = h1;
+               h5 = h1;
+             h6 = h1-0.01;
+           }
+             
+         } if(document.getElementById("distN").value == "N100000"){
+            //l=500;
+             var PA = ctx.sldPA.Value();
+             var H = -ctx.sldPA.Value()*(Math.log(ctx.sldPA.Value())/Math.log(2))-ctx.sldPB.Value()*(Math.log(ctx.sldPB.Value())/Math.log(2));
+             var items = Array(H-0.004,H-0.003,H-0.002,H-0.001,H,H+0.001,H+0.002,H+0.003,H+0.004,H+0.005);
+             var h1 = items[Math.floor(Math.random()*items.length)];
+             //var h1 =-(k/500)*(Math.log(k/500)/Math.log(2))-(1-(k/500))*(Math.log(1-(k/500))/Math.log(2));
+             h2 = h1;
+               h3 = h1;
+               h4 = h1;
+               h5 = h1;
+             h6 = h1;
+         }
+                //var h1 =-(k/10)*(Math.log(k/10)/Math.log(2))-(1-(k/10))*(Math.log(1-(k/10))/Math.log(2));
+                return {
+                    H1: h1,
+                    H2: h2,
+                    H3: h3,
+                    H4: h4,
+                    H5: h5,
+                    H6: h6,
+                    arr:folge
+                       }
+        }
+    
+    function solutionzweifun(){
+      var folge  = [];
+      
+        for (i=0;i<100;i++)
             {
             function updateRandom(){
                 var PA = ctx.sldPA.Value(),
@@ -624,75 +910,99 @@
                     return 0.5+n;
             }
                 var objects = ["A","B"];
-                var length = 10;
+                var length = 100;
                 var randomIndex = Math.floor((objects.length*updateRandom()));
-               //  console.log("d",updateRandom());
-           //     console.log("p",randomIndex);
-              //  var folge = new Array(10);
-              //  folge[i] = objects[randomIndex];
-         //   var l=i;
           
              folge[i] =objects[randomIndex];
-               // return object;
-                //ctx.solutionfunction1();
-           //    console.log("i",folge[i]);
-              
-            
-               //  console.log("i",l);
-              //   console.log("T",folge);
+               
                }
-                 console.log("i",folge);
-               // console.log("k",folge);
-                //solutionfunction();
-               // updateRandom();
+                 //console.log("i",folge);
+               
                folge=folge.join("");
                 return folge ;
-                //zahla = 10*PA,
-                //zahlb = 10*PB,
-                //A = String.fromCharCode(65),
-                //B = String.fromCharCode(66);
-            //return A.repeat(zahla)+B.repeat(zahlb);
         }
-
-  function changeN(){
-        ctx.solution1 = ctx.bfBox.create("text",[10,15, 
-            (function() {
-          return solutionfunction();})],
-        {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
-         if(document.getElementById("distN").value == "N10"){
-         
-            ctx.solution1.setAttribute({visible:true });
-            
-           // ctx.solution2.setAttribute({visible:false });
-            //ctx.solution3.setAttribute({visible:false });
-           // ctx.solution4.setAttribute({visible:false });
-           // ctx.solution5.setAttribute({visible:false });
-         } if(document.getElementById("distN").value == "N100"){
-            //ctx.solution2.setAttribute({visible:true });
-           ctx.solution1.setAttribute({visible:false });
-            //ctx.solution3.setAttribute({visible:false });
-            //ctx.solution4.setAttribute({visible:false });
-            //ctx.solution5.setAttribute({visible:false });
-         } if(document.getElementById("distN").value == "N1000"){
-            //ctx.solution3.setAttribute({visible:true });
-             ctx.solution1.setAttribute({visible:false });
-            //ctx.solution2.setAttribute({visible:false });
-            //ctx.solution4.setAttribute({visible:false });
-            //ctx.solution5.setAttribute({visible:false });
-         } if(document.getElementById("distN").value == "N10000"){
-            //ctx.solution4.setAttribute({visible:true });
-             ctx.solution1.setAttribute({visible:false });
-           // ctx.solution2.setAttribute({visible:false });
-           // ctx.solution3.setAttribute({visible:false });
-            //ctx.solution5.setAttribute({visible:false });
-         } if(document.getElementById("distN").value == "N100000"){
-            //ctx.solution5.setAttribute({visible:true });
-             ctx.solution1.setAttribute({visible:false });
-            //ctx.solution2.setAttribute({visible:false });
-            //ctx.solution3.setAttribute({visible:false });
-            //ctx.solution4.setAttribute({visible:false });
-         }
-    }
+     function solutiondreifun(){
+      var folge  = [];
+      
+        for (i=0;i<450;i++)
+            {
+            function updateRandom(){
+                var PA = ctx.sldPA.Value(),
+                PB = 1-ctx.sldPA.Value(),
+                P = Math.random(),
+                n = Math.random()/2;
+                if(P < PA)
+                    return 0+n;
+                if(P < 1)
+                    return 0.5+n;
+            }
+                var objects = ["A","B"];
+                var length = 450;
+                var randomIndex = Math.floor((objects.length*updateRandom()));
+          
+             folge[i] =objects[randomIndex];
+               
+               }
+                 //console.log("i",folge);
+               
+               folge=folge.join("");
+                return folge ;
+        }
+     function solutionvierfun(){
+      var folge  = [];
+      
+        for (i=0;i<462;i++)
+            {
+            function updateRandom(){
+                var PA = ctx.sldPA.Value(),
+                PB = 1-ctx.sldPA.Value(),
+                P = Math.random(),
+                n = Math.random()/2;
+                if(P < PA)
+                    return 0+n;
+                if(P < 1)
+                    return 0.5+n;
+            }
+                var objects = ["A","B"];
+                var length = 462;
+                var randomIndex = Math.floor((objects.length*updateRandom()));
+          
+             folge[i] =objects[randomIndex];
+               
+               }
+                 //console.log("i",folge);
+               
+               folge=folge.join("");
+                return folge ;
+        }
+         function solutionfivefun(){
+      var folge  = [];
+      
+        for (i=0;i<484;i++)
+            {
+            function updateRandom(){
+                var PA = ctx.sldPA.Value(),
+                PB = 1-ctx.sldPA.Value(),
+                P = Math.random(),
+                n = Math.random()/2;
+                if(P < PA)
+                    return 0+n;
+                if(P < 1)
+                    return 0.5+n;
+            }
+                var objects = ["A","B"];
+                var length = 484;
+                var randomIndex = Math.floor((objects.length*updateRandom()));
+          
+             folge[i] =objects[randomIndex];
+               
+               }
+                 //console.log("i",folge);
+               
+               folge=folge.join("");
+                return folge ;
+        }
+  
     
   function changeDistL() {
     if (document.getElementById("distSelectL").value == "ohneG") {
@@ -723,12 +1033,12 @@
       ctx.txtPA.setAttribute({visible:false});
       ctx.txtPB.setAttribute({visible:false});
       
-      ctx.osimuh1.setAttribute({visible:true });
-      ctx.osimuh2.setAttribute({visible:true });
-      ctx.osimuh3.setAttribute({visible:true });
-      ctx.osimuh4.setAttribute({visible:true });
-      ctx.osimuh5.setAttribute({visible:true });
-      ctx.osimuh6.setAttribute({visible:true });
+      //ctx.osimuh1.setAttribute({visible:true });
+      //ctx.osimuh2.setAttribute({visible:true });
+      //ctx.osimuh3.setAttribute({visible:true });
+      //ctx.osimuh4.setAttribute({visible:true });
+      //ctx.osimuh5.setAttribute({visible:true });
+      //ctx.osimuh6.setAttribute({visible:true });
         ctx.otheoh0.setAttribute({visible:true });
         ctx.otheoh1.setAttribute({visible:true });
         ctx.otheoh2.setAttribute({visible:true });
@@ -813,13 +1123,14 @@
     //ctx.fns[0].index = document.getElementById("distSelectL").selectedIndex;
     //setProbValues(0);
     ctx.cnfBox.fullUpdate();
-    ctx.pltBox.fullUpdate();
+    //ctx.pltBox.fullUpdate();
+    ctx.circleBox.fullUpdate();
+        ctx.pltBox.fullUpdate();
+        ctx.zeigBox.fullUpdate();
+        ctx.bfBox.fullUpdate();
   }
-
-
   // function for updating the table
   
-
   function callExercise (n) {
     // mark the selected button
     for (var i=0; i<=6; i++) {
@@ -832,36 +1143,27 @@
         ctx.exButtons[i].disabled = false;
       }
     }
-
     ctx.sldPA.setValue(ctx.verteilungDb[n].parameters.PA);
     ctx.sldPB.setValue(ctx.verteilungDb[n].parameters.PB);
     ctx.sldPAIB.setValue(ctx.verteilungDb[n].parameters.PAIB);
     ctx.sldPBIA.setValue(ctx.verteilungDb[n].parameters.PBIA);
     ctx.sldN.setValue(ctx.verteilungDb[n].parameters.N);
     document.getElementById("distSelectL").options.selectedIndex = ctx.verteilungDb[n].dropIndexL;
-
-
     changeDistL();
     //changeDistR();
-
     // loads the exercise description
     document.getElementById("description").innerHTML = ctx.verteilungDb[n].description;
     // tell MathJax that there is new content
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-
     document.getElementById("solButton").style.visibility = "visible";
-
     document.getElementById("solution").innerHTML = ctx.verteilungDb[n].solution;
     document.getElementById("solution").style.visibility = "hidden";
     document.getElementById("solButton").innerHTML = "Show solution";
-
     // hide the solution button when clicking reset
     if (n == 0) {
       document.getElementById("solButton").style.visibility = "hidden";
     }
-
   }
-
   function solution() {
     if (document.getElementById("solution").style.visibility == "hidden") {
       document.getElementById("solution").style.visibility = "visible";
@@ -871,7 +1173,6 @@
       document.getElementById("solution").style.visibility = "hidden";
       document.getElementById("solButton").innerHTML = "Show solution";
     }
-
       MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
     
@@ -898,7 +1199,6 @@
         }
   
     
-
    </script>
 </body>
 </html>

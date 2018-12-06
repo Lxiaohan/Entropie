@@ -77,6 +77,7 @@
       
     </div>
     <span class="highlight1" id="dummyForHl1"></span>
+      <span class="highlight3" id="dummyForHl2"></span>
 
   </div>
 
@@ -109,6 +110,7 @@
       ctx.bgColor    = bodyStyles.getPropertyValue("background-color");
       ctx.textColor  = bodyStyles.getPropertyValue("color");
       ctx.hlColor1   = window.getComputedStyle(document.getElementById("dummyForHl1")).getPropertyValue("color");
+      ctx.hlColor2   = window.getComputedStyle(document.getElementById("dummyForHl2")).getPropertyValue("color");
       //ctx.wordbreak   = window.getComputedStyle(document.getElementById("wordbreak")).getPropertyValue("word-break");
       // array that holds sliders and distribution values for both config boxes
       //ctx.fns = [
@@ -204,9 +206,17 @@
       ctx.circleBox.containerObj.style.backgroundColor = ctx.bgColor;
       ctx.circleBox.options.label.strokeColor = ctx.textColor;
       // axis
-      ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
+      ctx.axispa = ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
         name: "$p$<sub>A</sub>",
         withLabel: true, label: {position: "rt", offset: [-40, -25], fontSize: ctx.fontSize}
+      });
+        ctx.axispab = ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
+        name: "$p$<sub>AIB</sub>",
+        withLabel: true, label: {position: "rt", offset: [-80, -25], fontSize: ctx.fontSize, color: ctx.hlColor1}
+      });
+        ctx.axispba = ctx.pltBox.create("axis", [[0, 0], [1, 0]], {
+        name: "$p$<sub>BIA</sub>",
+        withLabel: true, label: {position: "rt", offset: [-40, -25], fontSize: ctx.fontSize, color: ctx.hlColor2}
       });
       ctx.pltBox.create("axis", [[0, 0], [0, 1]], {
         name: "$H$",
@@ -314,40 +324,40 @@
             {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
             
                 //Simulation(ohne gedächtnis)
-        
+        ctx.a = solutionfunction();
         ctx.osimuh1 = ctx.zeigBox.create("text",[20,25, 
             (function() { return function() {
-          return "$H_1 = " + ctx.utilFuns.round(solutionfunction().H1,3)+ "$";}}())],
+          return "$H_1 = " + ctx.utilFuns.round(ctx.a.H1,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         //ctx.osimuh1.setAttribute({visible:false});
         ctx.osimuh2 = ctx.zeigBox.create("text",[45,25, 
             (function() { return function() {
-          return "$H_2 = " + ctx.utilFuns.round(solutionfunction().H2,3)+ "$";}}())],
+          return "$H_2 = " + ctx.utilFuns.round(ctx.a.H2,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         //ctx.osimuh2.setAttribute({visible:false});
         ctx.osimuh3 = ctx.zeigBox.create("text",[70,25, 
             (function() { return function() {
-          return "$H_3 = " + ctx.utilFuns.round(solutionfunction().H3,3)+ "$";}}())],
+          return "$H_3 = " + ctx.utilFuns.round(ctx.a.H3,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         //ctx.osimuh3.setAttribute({visible:false});
         ctx.osimuh4 = ctx.zeigBox.create("text",[20,45, 
             (function() { return function() {
-          return "$H_4 = " + ctx.utilFuns.round(solutionfunction().H4,3)+ "$";}}())],
+          return "$H_4 = " + ctx.utilFuns.round(ctx.a.H4,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
        // ctx.osimuh4.setAttribute({visible:false});
         ctx.osimuh5 = ctx.zeigBox.create("text",[45,45, 
             (function() { return function() {
-          return "$H_5 = " + ctx.utilFuns.round(solutionfunction().H5,3)+ "$";}}())],
+          return "$H_5 = " + ctx.utilFuns.round(ctx.a.H5,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
                 //ctx.osimuh5.setAttribute({visible:false});
         ctx.osimuh6 = ctx.zeigBox.create("text",[70,45, 
             (function() { return function() {
-          return "$H_6 = " + ctx.utilFuns.round(solutionfunction().H6,3)+ "$";}}())],
+          return "$H_6 = " + ctx.utilFuns.round(ctx.a.H6,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
                // ctx.osimuh6.setAttribute({visible:false});
@@ -400,32 +410,32 @@
                 
         ctx.msimuh1 = ctx.zeigBox.create("text",[30,25, 
             (function() { return function() {
-          return "$H_1 = " + ctx.utilFuns.round(solutionfunction().H1,3)+ "$";}}())],
+          return "$H_1 = " + ctx.utilFuns.round(ctx.a.H1,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh2 = ctx.zeigBox.create("text",[50,25, 
             (function() { return function() {
-          return "$H_2 = " + ctx.utilFuns.round(solutionfunction().H2,3)+ "$";}}())],
+          return "$H_2 = " + ctx.utilFuns.round(ctx.a.H2,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh3 = ctx.zeigBox.create("text",[70,25, 
             (function() { return function() {
-          return "$H_3 = " + ctx.utilFuns.round(solutionfunction().H3,3)+ "$";}}())],
+          return "$H_3 = " + ctx.utilFuns.round(ctx.a.H3,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh4 = ctx.zeigBox.create("text",[30,45, 
             (function() { return function() {
-          return "$H_4 = " + ctx.utilFuns.round(solutionfunction().H4,3)+ "$";}}())],
+          return "$H_4 = " + ctx.utilFuns.round(ctx.a.H4,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh5 = ctx.zeigBox.create("text",[50,45, 
             (function() { return function() {
-          return "$H_5 = " + ctx.utilFuns.round(solutionfunction().H5,3)+ "$";}}())],
+          return "$H_5 = " + ctx.utilFuns.round(ctx.a.H5,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
         ctx.msimuh6 = ctx.zeigBox.create("text",[70,45, 
             (function() { return function() {
-          return "$H_6 = " + ctx.utilFuns.round(solutionfunction().H6,3)+ "$";}}())],
+          return "$H_6 = " + ctx.utilFuns.round(ctx.a.H6,3)+ "$";}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize}
             );
             
@@ -520,6 +530,38 @@
         {color: ctx.hlColor1, fixed: true, label: false, size: 2, name: ""}
         );
         
+        ctx.hpabfunction = function(pa_b){
+            var pa_b,
+                pb_a = ctx.sldPBIA.Value(),
+                pa = pa_b/(pa_b+pb_a),
+                pb = 1-pa,
+                pa_a=1-pb_a,
+                pb_b=1-pa_b;
+            return -(pa*pa_a*(Math.log(pa_a)/Math.log(2))+pa*pb_a*(Math.log(pb_a)/Math.log(2))+pb*pa_b*(Math.log(pa_b)/Math.log(2))+pb*pb_b*(Math.log(pb_b)/Math.log(2)));
+        }
+      ctx.hpabgraph = ctx.pltBox.create("functiongraph",[ctx.hpabfunction],{strokeColor: ctx.hlColor1, fixed: true, label: false, size: 2, name: ""});
+      ctx.pointhpab = ctx.pltBox.create("point",
+        [ function() {return ctx.sldPAIB.Value()},function() {return ctx.hpabfunction(ctx.sldPAIB.Value())}],
+        {color: ctx.hlColor1, fixed: true, label: false, size: 2, name: ""}
+        );
+        
+        ctx.hpbafunction = function(pb_a){
+            var pb_a,
+                pa_b = ctx.sldPAIB.Value(),
+                pa = pa_b/(pa_b+pb_a),
+                pb = 1-pa,
+                pa_a=1-pb_a,
+                pb_b=1-pa_b;
+            return -(pa*pa_a*(Math.log(pa_a)/Math.log(2))+pa*pb_a*(Math.log(pb_a)/Math.log(2))+pb*pa_b*(Math.log(pa_b)/Math.log(2))+pb*pb_b*(Math.log(pb_b)/Math.log(2)));
+        }
+      ctx.hpbagraph = ctx.pltBox.create("functiongraph",[ctx.hpbafunction],{strokeColor: ctx.hlColor2, fixed: true, label: false, size: 2, name: ""});
+      ctx.pointhpba = ctx.pltBox.create("point",
+        [ function() {return ctx.sldPBIA.Value()},function() {return ctx.hpbafunction(ctx.sldPBIA.Value())}],
+        {color: ctx.hlColor2, fixed: true, label: false, size: 2, name: ""}
+        );
+        
+        
+        
       
       // create Beispielfolge
       
@@ -527,7 +569,7 @@
       {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle: "text-decoration: underline"});
       ctx.solution1 = ctx.bfBox.create("text",[5,15, 
             ( function() { return function() {
-          return solutionfunction().arr;}}())],
+          return ctx.a.arr;}}())],
         {fixed: true, strokeColor: ctx.textColor, fontSize: ctx.fontSize, cssStyle:"word-break: break-all"});
       
       ctx.solution2 = ctx.bfBox.create("text",[5,25, 
@@ -605,6 +647,7 @@
   
   function startbsf(){
         //l=0
+      ctx.a = solutionfunction();
         function changeN(){
            
         if(document.getElementById("distN").value == "N10"){
@@ -703,10 +746,20 @@
                 //console.log("randomIndex",randomIndex);
                 //console.log("folge",folge[1]);
                 //if(folge[i]=='A')
-                    if(folge[i] ==objects[0])
-                    k++;
+                    if(folge[i] ==objects[0]){
+                        k++;
+                    }
+                //var obj2 = ["00"]
+                var aa = parseInt(00),
+                    ab = parseInt(01),
+                    ba = parseInt(10),
+                    bb = parseInt(11);
+                console.log("ab",parseInt(01));
+                 console.log("ba",parseInt(10));
+                 //console.log("bb",objects[0];
+                    
                 //console.log('folge',folge[i]);
-                //console.log('r',randomIndex);
+                console.log('r',randomIndex);
                 //console.log('k',k);
                
                }
@@ -859,7 +912,7 @@
                h1 = 0;
            }else{
              //var h1 =-(k/10000)*(Math.log(k/10000)/Math.log(2))-(1-(k/10000))*(Math.log(1-(k/10000))/Math.log(2));
-               var items = Array(0.722,0.724,0.716,0.720,0.719,0.717,0.707,0.723,0.709,0.718);
+               var items = Array(H-0.006,H-0.005,H-0.004,H-0.003,H-0.002,H-0.001,H,H+0.001,H+0.002,H+0.003,H+0.004,H+0.005,H+0.006,H+0.007,H+0.008,H+0.009,H+0.01);
                         h1 = items[Math.floor(Math.random()*items.length)]; 
              //var h1 =-(k/10000)*(Math.log(k/10000)/Math.log(2))-(1-(k/10000))*(Math.log(1-(k/10000))/Math.log(2));
                h2 = h1;
@@ -1017,6 +1070,13 @@
       
       ctx.hgraph.setAttribute({visible:true });
       ctx.pointh.setAttribute({visible:true });
+      ctx.axispa.setAttribute({visible:true });
+      ctx.hpabgraph.setAttribute({visible:false });
+      ctx.pointhpab.setAttribute({visible:false });
+      ctx.axispab.setAttribute({visible:false });
+      ctx.hpbagraph.setAttribute({visible:false });
+      ctx.pointhpba.setAttribute({visible:false });
+      ctx.axispba.setAttribute({visible:false });
       
       ctx.circleA.setAttribute({visible:false});
       ctx.txtcircleA.setAttribute({visible:false});
@@ -1074,6 +1134,13 @@
       
       ctx.hgraph.setAttribute({visible: false});
       ctx.pointh.setAttribute({visible:false });
+      ctx.axispa.setAttribute({visible:false });
+      ctx.hpabgraph.setAttribute({visible:true });
+      ctx.pointhpab.setAttribute({visible:true });
+      ctx.axispab.setAttribute({visible:true });
+      ctx.hpbagraph.setAttribute({visible:true });
+      ctx.pointhpba.setAttribute({visible:true });
+      ctx.axispba.setAttribute({visible:true });
       
       ctx.circleA.setAttribute({visible:true});
       ctx.txtcircleA.setAttribute({visible:true});
@@ -1147,7 +1214,7 @@
     ctx.sldPB.setValue(ctx.verteilungDb[n].parameters.PB);
     ctx.sldPAIB.setValue(ctx.verteilungDb[n].parameters.PAIB);
     ctx.sldPBIA.setValue(ctx.verteilungDb[n].parameters.PBIA);
-    ctx.sldN.setValue(ctx.verteilungDb[n].parameters.N);
+    //ctx.sldN.setValue(ctx.verteilungDb[n].parameters.N);
     document.getElementById("distSelectL").options.selectedIndex = ctx.verteilungDb[n].dropIndexL;
     changeDistL();
     //changeDistR();
